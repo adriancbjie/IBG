@@ -6,9 +6,13 @@ breed [erps erp]
 globals [ ]
 
 drivers-own [
-  thrifty ;; how thrify the driver is, between 0-1. 1 most thrifty, not willing to spend on ERP.
-  time ;; how important time matters to the driver.
+  ;; thrifty ;; how thrify the driver is, between 0-1. 1 most thrifty, not willing to spend on ERP.
+  ;; time ;; how important time matters to the driver.
   ]
+
+links-own [
+ has-erp? 
+]
 
 to setup
   ca
@@ -27,9 +31,10 @@ to setup
   ]
   
   ask spot 1 [ create-link-with spot 3 ]
-  ask spot 1 [ create-link-with spot 2 ]
+  ask spot 1 [ create-link-with spot 2 [ set color blue set has-erp? true ] ]
   ask spot 1 [ create-link-with spot 0 ]
   ask spot 0 [ create-link-with spot 2 ]
+  ask spot 0 [ create-link-with spot 3 ]
   ask spot 2 [ create-link-with spot 3 ]
   ask spot 2 [ create-link-with spot 4 ]
   ask spot 3 [ create-link-with spot 4 ]
@@ -100,6 +105,36 @@ NIL
 NIL
 NIL
 1
+
+SLIDER
+22
+232
+194
+265
+thrifty
+thrifty
+0
+1
+0.7
+0.1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+25
+277
+197
+310
+time
+time
+0
+1
+0.5
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
