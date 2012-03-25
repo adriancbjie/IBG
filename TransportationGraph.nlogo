@@ -26,6 +26,14 @@ to setup
       set color red
      ]
   ]
+  
+end
+
+to go
+  
+end
+
+to draw-roads
   ask point 0 [ create-road-to point 1]
   ask point 0 [ create-road-to point 2]
   ask point 1 [ create-road-to point 3]
@@ -53,18 +61,13 @@ to setup
   ask point 15 [ create-road-to point 7]
   ask point 4 [ create-road-to point 15]
   ask point 15 [ create-road-to point 9]
-  
-end
-
-to go
-  
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
 210
 10
-884
-705
+883
+704
 25
 25
 13.0
