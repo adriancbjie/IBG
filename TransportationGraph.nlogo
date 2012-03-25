@@ -1,17 +1,52 @@
+globals [point-locations]
+
 breed [vehicles vehicle]
 breed [points point]
 breed [destination-points destination-point]
 breed [erps erp]
 directed-link-breed [roads road]
 
-vehicles-own [type-of-vehicle thrift]
+vehicles-own [from-point to-point step-required step-taken]
 links-own [has-erp?]
 
 to setup
   ca
   reset-ticks
   resize-world -25 25 -25 25  
-  let point-locations [ 
+  
+  draw-points
+  draw-roads
+  
+  create-vehicles 10 [
+    setxy -23 23
+    set shape "car"
+    set from-point 0
+  ]
+  
+end
+
+to go
+  ask vehicles [
+    let on-point "none"
+    ;;first find which point the turtle is coming from
+     ask patch-here [set on-point get-point pxcor pycor]
+     ask point 0 [ask one-of my-links [show other-end]]
+  ]
+end
+
+;to-report get-point [x y]
+;  foreach point-locations
+;  [
+;    if item 1 ? = x and item 2 ? = y
+;    [
+;      report item 0 ?
+;    ]
+;  ]
+;  report "none"
+;end
+
+to draw-points
+  set point-locations [ 
     [0 -23 23] [1 -24 15] [2 -20 20] [3 -23 0] [4 -5 1] 
     [5 23 23] [6 24 15] [7 11 20] [8 23 0] [9 5 1] 
     [10 23 -23] [11 -24 -15] [12 -20 -20] [13 23 -10] [14 5 -15] 
@@ -22,15 +57,25 @@ to setup
       set xcor item 1 ?1
       set ycor item 2 ?1
       set shape "circle"
+      set size 0.5
       set label item 0 ?1
       set color red
      ]
   ]
   
-end
-
-to go
+  let destination-point-locations [
+    [16 20 24] [17 17 -23]
+  ]
   
+  foreach destination-point-locations [
+    create-destination-points 1 [
+      set xcor item 1 ?1
+      set ycor item 2 ?1
+      set shape "star"
+      set label item 0 ?1
+      set color yellow
+     ]
+  ]
 end
 
 to draw-roads
@@ -61,6 +106,9 @@ to draw-roads
   ask point 15 [ create-road-to point 7]
   ask point 4 [ create-road-to point 15]
   ask point 15 [ create-road-to point 9]
+  
+  ask point 5 [ create-road-to destination-point 16]
+  ask point 10 [ create-road-to destination-point 17]
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
