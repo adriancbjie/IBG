@@ -1,6 +1,11 @@
+breed [points point]
+
 to setup
-  ca
-  crt 10
+  
+end
+
+to go
+  
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -32,11 +37,45 @@ ticks
 
 BUTTON
 0
-1
+2
 66
-34
+35
 NIL
 setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+66
+3
+147
+36
+go once
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+147
+2
+210
+35
+NIL
+go
 NIL
 1
 T
