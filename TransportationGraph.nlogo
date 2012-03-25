@@ -1,27 +1,24 @@
-;; turtle breeds
-breed [drivers driver]
-breed [spots spot]
+breed [vehicles vehicle]
+breed [points point]
+breed [destination-points destination-point]
 breed [erps erp]
+directed-link-breed [roads road]
 
-globals [ ]
-
-drivers-own [
-  ;; thrifty ;; how thrify the driver is, between 0-1. 1 most thrifty, not willing to spend on ERP.
-  ;; time ;; how important time matters to the driver.
-  ]
-
-links-own [
- has-erp? 
-]
+vehicles-own [type-of-vehicle thrift]
+links-own [has-erp?]
 
 to setup
   ca
   reset-ticks
-  
-  let locations-xy [ [0 -5 6] [1 -8 -8] [2 2 4] [3 2 -9] [4 7 1] ]
-  
-  foreach locations-xy [
-    create-spots 1 [
+  resize-world -25 25 -25 25  
+  let point-locations [ 
+    [0 -23 23] [1 -24 15] [2 -20 20] [3 -23 0] [4 -5 1] 
+    [5 23 23] [6 24 15] [7 11 20] [8 23 0] [9 5 1] 
+    [10 23 -23] [11 -24 -15] [12 -20 -20] [13 23 -10] [14 5 -15] 
+    [15 0 15] 
+  ]
+  foreach point-locations [
+    create-points 1 [
       set xcor item 1 ?1
       set ycor item 2 ?1
       set shape "circle"
@@ -29,15 +26,33 @@ to setup
       set color red
      ]
   ]
-  
-  ask spot 1 [ create-link-with spot 3 ]
-  ask spot 1 [ create-link-with spot 2 [ set color blue set has-erp? true ] ]
-  ask spot 1 [ create-link-with spot 0 ]
-  ask spot 0 [ create-link-with spot 2 ]
-  ask spot 0 [ create-link-with spot 3 ]
-  ask spot 2 [ create-link-with spot 3 ]
-  ask spot 2 [ create-link-with spot 4 ]
-  ask spot 3 [ create-link-with spot 4 ]
+  ask point 0 [ create-road-to point 1]
+  ask point 0 [ create-road-to point 2]
+  ask point 1 [ create-road-to point 3]
+  ask point 3 [ create-road-to point 11]
+  ask point 3 [ create-road-to point 4]
+  ask point 2 [ create-road-to point 4]
+  ask point 2 [ create-road-to point 1]
+  ask point 4 [ create-road-to point 9]
+  ask point 11 [ create-road-to point 12]
+  ask point 12 [ create-road-to point 4]
+  ask point 7 [ create-road-to point 5]
+  ask point 9 [ create-road-to point 7]
+  ask point 4 [ create-road-to point 14]
+  ask point 12 [ create-road-to point 14]
+  ask point 14 [ create-road-to point 9]
+  ask point 14 [ create-road-to point 10]
+  ask point 10 [ create-road-to point 13]
+  ask point 13 [ create-road-to point 8]
+  ask point 9 [ create-road-to point 13]
+  ask point 8 [ create-road-to point 6]
+  ask point 6 [ create-road-to point 5]
+  ask point 6 [ create-road-to point 7]
+  ask point 9 [ create-road-to point 8]
+  ask point 2 [ create-road-to point 15]
+  ask point 15 [ create-road-to point 7]
+  ask point 4 [ create-road-to point 15]
+  ask point 15 [ create-road-to point 9]
   
 end
 
@@ -48,10 +63,10 @@ end
 GRAPHICS-WINDOW
 210
 10
-649
-470
-16
-16
+884
+705
+25
+25
 13.0
 1
 10
@@ -62,49 +77,15 @@ GRAPHICS-WINDOW
 1
 1
 1
--16
-16
--16
-16
+-25
+25
+-25
+25
 0
 0
 1
 ticks
 30.0
-
-BUTTON
-37
-85
-103
-118
-NIL
-setup
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
-
-BUTTON
-56
-154
-119
-187
-NIL
-go
-NIL
-1
-T
-OBSERVER
-NIL
-NIL
-NIL
-NIL
-1
 
 SLIDER
 22
@@ -135,6 +116,57 @@ time
 1
 NIL
 HORIZONTAL
+
+BUTTON
+0
+1
+66
+34
+NIL
+setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+66
+1
+147
+34
+go once
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+148
+1
+211
+34
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
@@ -465,7 +497,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0RC5
+NetLogo 5.0RC6
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
