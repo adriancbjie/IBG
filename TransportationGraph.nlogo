@@ -1,4 +1,4 @@
-globals [point-locations]
+globals [point-locations destination-point-locations]
 
 breed [vehicles vehicle]
 breed [points point]
@@ -6,7 +6,7 @@ breed [destination-points destination-point]
 breed [erps erp]
 directed-link-breed [roads road]
 
-vehicles-own [from-point to-point step-required step-taken]
+vehicles-own [from-point to-point step-required step-taken direction]
 links-own [has-erp?]
 
 to setup
@@ -20,30 +20,62 @@ to setup
   create-vehicles 10 [
     setxy -23 23
     set shape "car"
-    set from-point 0
+    set from-point point 0
+    set step-taken 0
+    set step-required 0
   ]
   
 end
 
 to go
   ask vehicles [
-    let on-point "none"
-    ;;first find which point the turtle is coming from
-     ask patch-here [set on-point get-point pxcor pycor]
-     ask point 0 [ask one-of my-links [show other-end]]
+    if not reached-destination? from-point [ 
+      if step-taken = 0
+      [
+        let temp 0
+        let temp-heading 0
+        ;;first find which point the turtle is coming from
+        ask from-point [
+ 
+          ask one-of my-links [
+            set temp-heading link-heading
+            set temp other-end
+          ]
+        ]
+        set to-point temp
+        face to-point
+        set step-required (distance to-point - 1)
+      ]
+      
+      ifelse step-taken < step-required
+      [
+        fd 1
+        set step-taken (step-taken + 1)      
+      ]
+      [
+        set step-taken 0
+        set from-point to-point
+        move-to to-point
+      ]
+
+    ]
   ]
+    ;;find distance
 end
 
-;to-report get-point [x y]
-;  foreach point-locations
-;  [
-;    if item 1 ? = x and item 2 ? = y
-;    [
-;      report item 0 ?
-;    ]
-;  ]
-;  report "none"
-;end
+to-report reached-destination? [point]
+  let x 0
+  let y 0
+  ask point [set x pxcor set y pycor]
+  foreach destination-point-locations
+  [
+    if item 1 ? = x and item 2 ? = y
+    [
+      report true
+    ]
+  ]
+  report false
+end
 
 to draw-points
   set point-locations [ 
@@ -63,7 +95,7 @@ to draw-points
      ]
   ]
   
-  let destination-point-locations [
+  set destination-point-locations [
     [16 20 24] [17 17 -23]
   ]
   
