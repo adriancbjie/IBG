@@ -33,14 +33,9 @@ to go
       if step-taken = 0
       [
         let temp 0
-        let temp-heading 0
         ;;first find which point the turtle is coming from
         ask from-point [
- 
-          ask one-of my-links [
-            set temp-heading link-heading
-            set temp other-end
-          ]
+          set temp one-of out-link-neighbors
         ]
         set to-point temp
         face to-point
