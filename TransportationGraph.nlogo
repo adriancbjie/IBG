@@ -6,8 +6,8 @@ breed [destination-points destination-point]
 breed [erps erp]
 directed-link-breed [roads road]
 
-vehicles-own [from-point to-point step-required step-taken direction]
-links-own [has-erp?]
+vehicles-own [from-point to-point step-required step-taken distance-travelled moving?]
+links-own [has-erp? capacity vehicle-count]
 
 to setup
   ca
@@ -16,20 +16,25 @@ to setup
   
   draw-points
   draw-roads
+  layout-erp
   
-  create-vehicles 10 [
+  create-vehicles 1000 [
     setxy -23 23
     set shape "car"
     set from-point point 0
     set step-taken 0
     set step-required 0
+    set distance-travelled 0
+    set moving? true
   ]
   
 end
 
 to go
   ask vehicles [
-    if not reached-destination? from-point [ 
+    if not reached-destination? from-point 
+    and moving?
+    [ 
       if step-taken = 0
       [
         let temp 0
@@ -37,7 +42,15 @@ to go
         ask from-point [
           set temp one-of out-link-neighbors
         ]
+        
         set to-point temp
+        
+        ask from-point [
+          ask out-link-to temp [
+            set vehicle-count (vehicle-count + 1)
+          ]
+        ]
+        
         face to-point
         set step-required (distance to-point - 1)
       ]
@@ -45,17 +58,19 @@ to go
       ifelse step-taken < step-required
       [
         fd 1
-        set step-taken (step-taken + 1)      
+        set step-taken (step-taken + 1)
+        set distance-travelled (distance-travelled + 1) 
       ]
       [
         set step-taken 0
-        set from-point to-point
-        move-to to-point
+        set from-point to-point        move-to to-point
       ]
 
     ]
   ]
-    ;;find distance
+  
+  
+  tick
 end
 
 to-report reached-destination? [point]
@@ -136,6 +151,15 @@ to draw-roads
   
   ask point 5 [ create-road-to destination-point 16]
   ask point 10 [ create-road-to destination-point 17]
+  
+  ;;set link capacity
+  ask links [
+    set capacity 10
+    set vehicle-count 0
+  ]
+end
+
+to layout-erp
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -164,36 +188,6 @@ GRAPHICS-WINDOW
 1
 ticks
 30.0
-
-SLIDER
-22
-232
-194
-265
-thrifty
-thrifty
-0
-1
-0.7
-0.1
-1
-NIL
-HORIZONTAL
-
-SLIDER
-25
-277
-197
-310
-time
-time
-0
-1
-0.5
-1
-1
-NIL
-HORIZONTAL
 
 BUTTON
 0
@@ -245,6 +239,24 @@ NIL
 NIL
 NIL
 1
+
+PLOT
+0
+47
+200
+197
+distance travelled by all cars
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot sum [distance-travelled] of vehicles"
 
 @#$#@#$#@
 ## WHAT IS IT?
