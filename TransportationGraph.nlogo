@@ -9,8 +9,6 @@ directed-link-breed [roads road]
 
 vehicles-own [thrift time-urgency from-point to-point step-required step-taken distance-travelled moving?]
 roads-own [has-erp? capacity vehicle-count]
-vehicles-own [from-point to-point step-required step-taken distance-travelled moving?]
-links-own [has-erp? capacity vehicle-count]
 
 to setup
   ca
