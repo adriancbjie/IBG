@@ -1,4 +1,4 @@
-globals [point-locations destination-point-locations]
+globals [point-locations destination-point-locations paths p-labels t-labels]
 
 breed [vehicles vehicle]
 breed [points point]
@@ -19,11 +19,11 @@ to setup
   layout-erp
   
   create-vehicles 100 [
-    set thrift 0.5
-    set time-urgency 0.5
+    set thrift 0
+    set time-urgency 1.0
     setxy 23 15
     set shape "car"
-    set from-point point 0
+    set from-point one-of points with [label = "start"]
     set step-taken 0
     set step-required 0
     set distance-travelled 0
@@ -42,33 +42,39 @@ to go
       if step-taken = 0
       [
         let temp 0
-        
+        let prob-time random-float 1
+        let prob-thrift random-float 1
         ;;time urgency will determine probability at which the car will choose the shorter distance
-        if random-float 1 > time-urgency
+        ifelse prob-time <= time-urgency and prob-thrift <= thrift
         [
-          ;;do shorter distance logic
-          
+          ;;do the priority one
+          ifelse time-urgency > thrift
+          [
+          ]
+          [
+          ]
         ]
+        [
+          if prob-time <= time-urgency
+          [
+            ;;do shortest travel route logic
+            set-shortest-path
+          ]
+          if prob-thrift <= thrift
+          [
+            ;;do thrift logic
+          ]
+        ]
+        
+        ;;face the point and set required distance
+        face to-point
+        set step-required (distance to-point - 1)
         ;;thriftiness will determine the probability which the car will choose the non-ERP road
         
         ;;if either variable has higher importance, then it will have priority if both occurs.
         
         
-        ;;first find which point the turtle is coming from
-        ask from-point [
-          set temp one-of out-link-neighbors
-        ]
-        
-        set to-point temp
-        
-        ask from-point [
-          ask out-link-to temp [
-            set vehicle-count (vehicle-count + 1)
-          ]
-        ]
-        
-        face to-point
-        set step-required (distance to-point - 1)
+
       ]
       
       ifelse step-taken < step-required
@@ -86,6 +92,34 @@ to go
     ]
   ]
   tick
+end
+
+to set-shortest-path
+  ;;do shorter distance logic
+  ;;first get minimum distance of all points in junction
+  let dist-list []
+  let plab-list []
+  let fp-x [xcor] of from-point
+  let fp-y [ycor] of from-point
+  ask from-point [
+    ask out-link-neighbors 
+    [
+      set dist-list lput (distancexy fp-x fp-y) dist-list
+      set plab-list lput label plab-list
+    ]
+  ]
+  ;;show dist-list
+  ;;get the shortest route distance
+  let index 0
+  foreach dist-list
+  [
+    ;;get point label of minimum distance and set the to-point variable
+    if ? = min dist-list
+    [
+      set to-point one-of points with [label = item index plab-list]
+    ]
+    set index (index + 1)
+  ]
 end
 
 to-report reached-destination? [point]
@@ -118,9 +152,9 @@ to draw-points
     ["2" 18 7]
     ["3" 0 17]
     ["4" -7 6]
-    ["5" -10 4]
+    ["t18" -10 4]
     ["6" -13 14]
-    ["7" -7 22]
+    ["t19" -7 22]
     
     ;;end point:
     ["end" -16 -22]
@@ -158,15 +192,43 @@ to draw-points
     
     ["t17" -23 3]
   ]
+  
+  ;;define a selection list of turning points only, with start and end
+  set p-labels ["2" "3" "4" "6" "start" "end"]
+  set t-labels ["t1" "t2" "t3" "t4" "t5" "t6" "t7" "t8" "t9" "t10" "t11" "t12" "t13" "t14" "t15" "t16" "t17" "t18" "t19"]
+  ;;then plot
   foreach point-locations [
-    create-points 1 [
-      set xcor item 1 ?1
-      set ycor item 2 ?1
-      set shape "circle"
-      set size 0.5
-      set label item 0 ?1
-      set label-color black
-      set color red
+    ifelse member? item 0 ? p-labels
+    [
+      create-points 1 [
+        set xcor item 1 ?1
+        set ycor item 2 ?1
+        set label item 0 ?1
+        set label-color black
+        
+        ifelse item 0 ? = "start" or item 0 ? = "end"
+        [
+          set size 0.7
+          set color yellow
+          set shape "star"
+        ]
+        [
+          set size 0.6
+          set color red
+          set shape "circle"
+        ]
+      ]
+    ]
+    [
+      create-points 1 [
+        set xcor item 1 ?1
+        set ycor item 2 ?1
+        set shape "square"
+        set size 0.5
+        set label item 0 ?1
+        set label-color black
+        set color green
+      ]      
     ]
   ]
   
@@ -193,8 +255,8 @@ to draw-roads
   ask points with [label = "t3"] [ create-road-to one-of points with [label = "end"] ]
   
   ;;route 3 decision at point 4
-  ask points with [label = "4"] [ create-road-to one-of points with [label = "5"] ]
-  ask points with [label = "5"] [ create-road-to one-of points with [label = "t5"] ]
+  ask points with [label = "4"] [ create-road-to one-of points with [label = "t18"] ]
+  ask points with [label = "t18"] [ create-road-to one-of points with [label = "t5"] ]
   ask points with [label = "t5"] [ create-road-to one-of points with [label = "t9"] ]
   ask points with [label = "t9"] [ create-road-to one-of points with [label = "t6"] ]
   ask points with [label = "t6"] [ create-road-to one-of points with [label = "t10"] ]
@@ -203,8 +265,8 @@ to draw-roads
   ask points with [label = "t16"] [ create-road-to one-of points with [label = "end"] ]
   
   ;;route 4 decision at point 3
-  ask points with [label = "3"] [ create-road-to one-of points with [label = "7"] ]
-  ask points with [label = "7"] [ create-road-to one-of points with [label = "6"] ]
+  ask points with [label = "3"] [ create-road-to one-of points with [label = "t19"] ]
+  ask points with [label = "t19"] [ create-road-to one-of points with [label = "6"] ]
   ask points with [label = "6"] [ create-road-to one-of points with [label = "t7"] ]
   ask points with [label = "t7"] [ create-road-to one-of points with [label = "t8"] ]
   ask points with [label = "t8"] [ create-road-to one-of points with [label = "t9"] ]
@@ -221,6 +283,41 @@ to draw-roads
     set capacity 10
     set vehicle-count 0
   ]
+  
+  ;;set path array for easier manipulation of calculating distances
+  set paths
+  [
+    ["2" "3"]
+    ["2" "t1" "t2" "t3" "t16" "end"]
+    ["3" "t19" "6"]
+    ["3" "t4" "4"]
+    ["6" "t7" "t8" "t9" "t6" "t10" "t11" "t16" "end"]
+    ["6" "t17" "t10" "t11" "t16" "end"]
+    ["4" "t18" "t5" "t9" "t6" "t10" "t11" "t16" "end"]
+    ["4" "t12" "t13" "t14" "t15" "t3" "t16" "end"]
+  ]
+  
+  ;;pre calculate path distances for each in-between connectors (put the distance as the first item)
+  let p-index 0
+  foreach paths
+  [
+    let in-between-points ?
+    let index 0
+    let dist 0
+    while [index < (length in-between-points - 1)]
+    [
+      ;;calc total distance 
+      ask one-of points with [label = item index in-between-points]
+      [
+        set dist (dist + distance one-of points with [label = item (index + 1) in-between-points])
+      ]
+      set index (index + 1)
+    ]
+    set ? fput dist ?
+    set paths replace-item p-index paths ?
+    set p-index (p-index + 1)
+  ]
+  
 end
 
 to layout-erp
