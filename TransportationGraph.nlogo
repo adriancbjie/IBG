@@ -3,7 +3,6 @@ globals [point-locations destination-point-locations]
 breed [vehicles vehicle]
 breed [points point]
 breed [turn-points turn-point]
-breed [destination-points destination-point]
 breed [erps erp]
 directed-link-breed [roads road]
 
@@ -22,7 +21,7 @@ to setup
   create-vehicles 1 [
     set thrift 1
     set time-urgency 0
-    setxy -23 23
+    setxy 23 15
     set shape "car"
     set from-point point 0
     set step-taken 0
@@ -90,9 +89,9 @@ to-report reached-destination? [point]
   let x 0
   let y 0
   ask point [set x pxcor set y pycor]
-  foreach destination-point-locations
+  ask points with [label = "end"]
   [
-    if item 1 ? = x and item 2 ? = y
+    if pxcor = x and pycor = y
     [
       report true
     ]
