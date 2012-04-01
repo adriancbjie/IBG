@@ -18,9 +18,9 @@ to setup
   draw-roads
   layout-erp
   
-  create-vehicles 1 [
-    set thrift 1
-    set time-urgency 0
+  create-vehicles 100 [
+    set thrift 0.5
+    set time-urgency 0.5
     setxy 23 15
     set shape "car"
     set from-point point 0
@@ -43,13 +43,16 @@ to go
       [
         let temp 0
         
-        let dist_container []
-        ;;find out all distance of immediate roads
-        ask from-point [
-          ask out-link-neighbors [
-            set dist_container lput (distance patch-here - 1 ) dist_container
-          ]
+        ;;time urgency will determine probability at which the car will choose the shorter distance
+        if random-float 1 > time-urgency
+        [
+          ;;do shorter distance logic
+          
         ]
+        ;;thriftiness will determine the probability which the car will choose the non-ERP road
+        
+        ;;if either variable has higher importance, then it will have priority if both occurs.
+        
         
         ;;first find which point the turtle is coming from
         ask from-point [
@@ -89,14 +92,21 @@ to-report reached-destination? [point]
   let x 0
   let y 0
   ask point [set x pxcor set y pycor]
-  ask points with [label = "end"]
+  
+  let dest-x 0
+  let dest-y 0
+  ask one-of points with [label = "end"]
   [
-    if pxcor = x and pycor = y
-    [
-      report true
-    ]
+    set dest-x pxcor
+    set dest-y pycor
   ]
-  report false
+  ifelse dest-x = x and dest-y = y
+  [
+    report true
+  ]
+  [
+    report false
+  ]
 end
 
 to draw-points
@@ -170,9 +180,7 @@ to draw-roads
   ask points with [label = "t1"] [ create-road-to one-of points with [label = "t2"] ]
   ask points with [label = "t2"] [ create-road-to one-of points with [label = "t3"] ]
   ask points with [label = "t3"] [ create-road-to one-of points with [label = "end"] ]
-  
-  ;;end
-  
+
   ;;route 2 decision at point 2
   ask points with [label = "2"] [ create-road-to one-of points with [label = "3"] ]
   ask points with [label = "3"] [ create-road-to one-of points with [label = "t4"] ]
@@ -187,7 +195,8 @@ to draw-roads
   ;;route 3 decision at point 4
   ask points with [label = "4"] [ create-road-to one-of points with [label = "5"] ]
   ask points with [label = "5"] [ create-road-to one-of points with [label = "t5"] ]
-  ask points with [label = "t5"] [ create-road-to one-of points with [label = "t6"] ]
+  ask points with [label = "t5"] [ create-road-to one-of points with [label = "t9"] ]
+  ask points with [label = "t9"] [ create-road-to one-of points with [label = "t6"] ]
   ask points with [label = "t6"] [ create-road-to one-of points with [label = "t10"] ]
   ask points with [label = "t10"] [ create-road-to one-of points with [label = "t11"] ]
   ask points with [label = "t11"] [ create-road-to one-of points with [label = "t16"] ]
