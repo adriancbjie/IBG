@@ -1,0 +1,51 @@
+world-size -29 29 -22 22
+
+
+[x y tag]
+
+[[x y tag] [x y tag] [x y tag]]
+
+
+## starting point
+[23 15 1]
+
+## decision points:
+[18 7 2]
+[0 17 3]
+[-7 6 4]
+[-10 4 5]
+[-13 14 6]
+
+## end point:
+[-16 22 50]
+
+
+## turning points:
+Shenton Way
+[5 -14 "t"]
+
+Keppel Road
+[-1 -22 "t"]
+[-14 -22 "t"]
+
+South Bridge Road
+[-6 7 "t"]
+
+Neil Road
+[-13 3 "t"]
+[-17 -1 "t"]
+
+Keong Saik Road
+[-12 13 "t"]
+[-16 5 "t"]
+[-16 1 "t"]
+
+Cantonment Road
+[-19 -4 "t"]
+[-17 -15 "t"]
+
+Tanjong Pagar Road
+[-8 2 "t"]
+[-7 0 "t"]
+[-8 -4 "t"]
+[-10 -17 "t"]

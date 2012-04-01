@@ -9,8 +9,6 @@ directed-link-breed [roads road]
 
 vehicles-own [thrift time-urgency from-point to-point step-required step-taken distance-travelled moving?]
 roads-own [has-erp? capacity vehicle-count]
-vehicles-own [from-point to-point step-required step-taken distance-travelled moving?]
-links-own [has-erp? capacity vehicle-count]
 
 to setup
   ca
@@ -32,9 +30,12 @@ to setup
     set distance-travelled 0
     set moving? true
   ]
+<<<<<<< HEAD
+=======
   
   import-drawing "map.png"
   
+>>>>>>> 90d12f88615fe2f0ca0d6c17a1acd2a9f6222f5c
 end
 
 to go
@@ -602,7 +603,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0RC6
+NetLogo 5.0RC5
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
