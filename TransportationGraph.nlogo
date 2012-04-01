@@ -102,10 +102,52 @@ end
 
 to draw-points
   set point-locations [
-    [0 -23 23] [1 -24 15] [2 -20 20] [3 -23 0] [4 -5 1] 
-    [5 23 23] [6 24 15] [7 11 20] [8 23 0] [9 5 1] 
-    [10 23 -23] [11 -24 -15] [12 -20 -20] [13 23 -10] [14 5 -15] 
-    [15 0 15]
+    ;;starting point
+    ["start" 23 15]
+    
+    ;;decision points:
+    ["2" 18 7]
+    ["3" 0 17]
+    ["4" -7 6]
+    ["5" -10 4]
+    ["6" -13 14]
+    ["7" -7 22]
+    
+    ;;end point:
+    ["end" -16 -22]
+    
+    ;;turning points:
+    ;;Shenton Way
+    ["t1" 5 -14]
+    
+    ;;Keppel Road
+    ["t2" -1 -22]
+    ["t3" -10 -22]
+    ["t16" -14 -22]
+    
+    ;;South Bridge Road
+    ["t4" -6 7]
+    
+    ;;Neil Road
+    ["t5" -13 3]
+    ["t6" -17 -1]
+    
+    ;;Keong Saik Road
+    ["t7" -12 13]
+    ["t8" -16 5]
+    ["t9" -16 0]
+    
+    ;;Cantonment Road
+    ["t10" -19 -4]
+    ["t11" -17 -15]
+    
+    ;;Tanjong Pagar Road
+    ["t12" -8 2]
+    ["t13" -7 0]
+    ["t14" -8 -4]
+    ["t15" -10 -17]
+    
+    ["t17" -23 3]
   ]
   foreach point-locations [
     create-points 1 [
@@ -114,59 +156,60 @@ to draw-points
       set shape "circle"
       set size 0.5
       set label item 0 ?1
+      set label-color black
       set color red
     ]
   ]
   
-  set destination-point-locations [
-    [16 20 24] [17 17 -23]
-  ]
-  
-  foreach destination-point-locations [
-    create-destination-points 1 [
-      set xcor item 1 ?1
-      set ycor item 2 ?1
-      set shape "star"
-      set label item 0 ?1
-      set color yellow
-     ]
-  ]
+
 end
 
 to draw-roads
-  ask point 0 [ create-road-to point 1]
-  ask point 0 [ create-road-to point 2]
-  ask point 1 [ create-road-to point 3]
-  ask point 3 [ create-road-to point 11]
-  ask point 3 [ create-road-to point 4]
-  ask point 2 [ create-road-to point 4]
-  ask point 2 [ create-road-to point 1]
-  ask point 4 [ create-road-to point 9]
-  ask point 11 [ create-road-to point 12]
-  ask point 12 [ create-road-to point 4]
-  ask point 7 [ create-road-to point 5]
-  ask point 9 [ create-road-to point 7]
-  ask point 4 [ create-road-to point 14]
-  ask point 12 [ create-road-to point 14]
-  ask point 14 [ create-road-to point 9]
-  ask point 14 [ create-road-to point 10]
-  ask point 10 [ create-road-to point 13]
-  ask point 13 [ create-road-to point 8]
-  ask point 9 [ create-road-to point 13]
-  ask point 8 [ create-road-to point 6]
-  ask point 6 [ create-road-to point 5]
-  ask point 6 [ create-road-to point 7]
-  ask point 9 [ create-road-to point 8]
-  ask point 2 [ create-road-to point 15]
-  ask point 15 [ create-road-to point 7]
-  ask point 4 [ create-road-to point 15]
-  ask point 15 [ create-road-to point 9]
+  ;;route 1
+  ask points with [label = "start"] [ create-road-to one-of points with [label = "2"] ]
+  ask points with [label = "2"] [ create-road-to one-of points with [label = "t1"] ]
+  ask points with [label = "t1"] [ create-road-to one-of points with [label = "t2"] ]
+  ask points with [label = "t2"] [ create-road-to one-of points with [label = "t3"] ]
+  ask points with [label = "t3"] [ create-road-to one-of points with [label = "end"] ]
   
-  ask point 5 [ create-road-to destination-point 16]
-  ask point 10 [ create-road-to destination-point 17]
+  ;;end
+  
+  ;;route 2 decision at point 2
+  ask points with [label = "2"] [ create-road-to one-of points with [label = "3"] ]
+  ask points with [label = "3"] [ create-road-to one-of points with [label = "t4"] ]
+  ask points with [label = "t4"] [ create-road-to one-of points with [label = "4"] ]
+  ask points with [label = "4"] [ create-road-to one-of points with [label = "t12"] ]
+  ask points with [label = "t12"] [ create-road-to one-of points with [label = "t13"] ]
+  ask points with [label = "t13"] [ create-road-to one-of points with [label = "t14"] ]
+  ask points with [label = "t14"] [ create-road-to one-of points with [label = "t15"] ]
+  ask points with [label = "t15"] [ create-road-to one-of points with [label = "t3"] ]
+  ask points with [label = "t3"] [ create-road-to one-of points with [label = "end"] ]
+  
+  ;;route 3 decision at point 4
+  ask points with [label = "4"] [ create-road-to one-of points with [label = "5"] ]
+  ask points with [label = "5"] [ create-road-to one-of points with [label = "t5"] ]
+  ask points with [label = "t5"] [ create-road-to one-of points with [label = "t6"] ]
+  ask points with [label = "t6"] [ create-road-to one-of points with [label = "t10"] ]
+  ask points with [label = "t10"] [ create-road-to one-of points with [label = "t11"] ]
+  ask points with [label = "t11"] [ create-road-to one-of points with [label = "t16"] ]
+  ask points with [label = "t16"] [ create-road-to one-of points with [label = "end"] ]
+  
+  ;;route 4 decision at point 3
+  ask points with [label = "3"] [ create-road-to one-of points with [label = "7"] ]
+  ask points with [label = "7"] [ create-road-to one-of points with [label = "6"] ]
+  ask points with [label = "6"] [ create-road-to one-of points with [label = "t7"] ]
+  ask points with [label = "t7"] [ create-road-to one-of points with [label = "t8"] ]
+  ask points with [label = "t8"] [ create-road-to one-of points with [label = "t9"] ]
+  ask points with [label = "6"] [ create-road-to one-of points with [label = "t7"] ]
+  ask points with [label = "t7"] [ create-road-to one-of points with [label = "t8"] ]
+  
+  ;;route 5 decision at point 6
+  ask points with [label = "6"] [ create-road-to one-of points with [label = "t17"] ]
+  ask points with [label = "t17"] [ create-road-to one-of points with [label = "t10"] ]
   
   ;;set link capacity
   ask roads [
+    set color black
     set capacity 10
     set vehicle-count 0
   ]
