@@ -6,8 +6,8 @@ breed [destination-points destination-point]
 breed [erps erp]
 directed-link-breed [roads road]
 
-vehicles-own [from-point to-point step-required step-taken distance-travelled moving?]
-links-own [has-erp? capacity vehicle-count]
+vehicles-own [thrift time-urgency from-point to-point step-required step-taken distance-travelled moving?]
+roads-own [has-erp? capacity vehicle-count]
 
 to setup
   ca
@@ -18,7 +18,9 @@ to setup
   draw-roads
   layout-erp
   
-  create-vehicles 1000 [
+  create-vehicles 1 [
+    set thrift 1
+    set time-urgency 0
     setxy -23 23
     set shape "car"
     set from-point point 0
@@ -27,17 +29,25 @@ to setup
     set distance-travelled 0
     set moving? true
   ]
-  
 end
 
 to go
   ask vehicles [
     if not reached-destination? from-point 
     and moving?
-    [ 
+    [
       if step-taken = 0
       [
         let temp 0
+        
+        let dist_container []
+        ;;find out all distance of immediate roads
+        ask from-point [
+          ask out-link-neighbors [
+            set dist_container lput (distance patch-here - 1 ) dist_container
+          ]
+        ]
+        
         ;;first find which point the turtle is coming from
         ask from-point [
           set temp one-of out-link-neighbors
@@ -63,13 +73,12 @@ to go
       ]
       [
         set step-taken 0
-        set from-point to-point        move-to to-point
+        set from-point to-point
+        move-to to-point
       ]
 
     ]
   ]
-  
-  
   tick
 end
 
@@ -88,11 +97,11 @@ to-report reached-destination? [point]
 end
 
 to draw-points
-  set point-locations [ 
+  set point-locations [
     [0 -23 23] [1 -24 15] [2 -20 20] [3 -23 0] [4 -5 1] 
     [5 23 23] [6 24 15] [7 11 20] [8 23 0] [9 5 1] 
     [10 23 -23] [11 -24 -15] [12 -20 -20] [13 23 -10] [14 5 -15] 
-    [15 0 15] 
+    [15 0 15]
   ]
   foreach point-locations [
     create-points 1 [
@@ -102,7 +111,7 @@ to draw-points
       set size 0.5
       set label item 0 ?1
       set color red
-     ]
+    ]
   ]
   
   set destination-point-locations [
@@ -153,7 +162,7 @@ to draw-roads
   ask point 10 [ create-road-to destination-point 17]
   
   ;;set link capacity
-  ask links [
+  ask roads [
     set capacity 10
     set vehicle-count 0
   ]
