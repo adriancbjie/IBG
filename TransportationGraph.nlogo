@@ -18,9 +18,9 @@ to setup
   draw-roads
   layout-erp
   
-  create-vehicles 100 [
-    set thrift 0
-    set time-urgency 1.0
+  create-vehicles num-vehicles [
+    set thrift 1
+    set time-urgency 0
     setxy 23 15
     set shape "car"
     set from-point one-of points with [label = "start"]
@@ -63,6 +63,7 @@ to go
           if prob-thrift <= thrift
           [
             ;;do thrift logic
+            set-path-of-no-erp
           ]
         ]
         
@@ -94,31 +95,107 @@ to go
   tick
 end
 
+to set-path-of-no-erp
+  ;;extract out start and end
+  let ep-labels p-labels
+  set ep-labels remove-item 4 ep-labels
+  set ep-labels remove-item 4 ep-labels
+  ifelse member? [label] of from-point ep-labels
+  [
+    ;;if this is a junction point, make erp decision
+    ;;we choose the path of no erp
+    ;;get the agentset of outlink neighbours, then select link with no erp.
+    let temp ""
+    let no-erp-link ""
+;    ask [links] of from-point 
+    ask from-point 
+    [
+      ask my-out-links
+      [
+        if not has-erp?
+        [
+          set temp end2
+        ]
+      ]
+    ]
+    set to-point temp
+  ]
+  [
+    ;;this condition is if the point is a turning point, then just go forward
+    let temp ""
+    ask from-point [
+      set temp one-of out-link-neighbors
+    ]
+    set to-point temp
+  ]  
+end
+
 to set-shortest-path
   ;;do shorter distance logic
-  ;;first get minimum distance of all points in junction
-  let dist-list []
-  let plab-list []
-  let fp-x [xcor] of from-point
-  let fp-y [ycor] of from-point
-  ask from-point [
-    ask out-link-neighbors 
-    [
-      set dist-list lput (distancexy fp-x fp-y) dist-list
-      set plab-list lput label plab-list
-    ]
-  ]
-  ;;show dist-list
-  ;;get the shortest route distance
-  let index 0
-  foreach dist-list
+;  ;;first get minimum distance of all points in junction
+;  let dist-list []
+;  let plab-list []
+;  let fp-x [xcor] of from-point
+;  let fp-y [ycor] of from-point
+;  ask from-point [
+;    ask out-link-neighbors 
+;    [
+;      set dist-list lput (distancexy fp-x fp-y) dist-list
+;      set plab-list lput label plab-list
+;    ]
+;  ]
+;  ;;show dist-list
+;  ;;get the shortest route distance
+;  let index 0
+;  foreach dist-list
+;  [
+;    ;;get point label of minimum distance and set the to-point variable
+;    if ? = min dist-list
+;    [
+;      set to-point one-of points with [label = item index plab-list]
+;    ]
+;    set index (index + 1)
+;  ]
+  
+  ;;extract out start and end
+  let ep-labels p-labels
+  set ep-labels remove-item 4 ep-labels
+  set ep-labels remove-item 4 ep-labels
+  ifelse member? [label] of from-point ep-labels
   [
-    ;;get point label of minimum distance and set the to-point variable
-    if ? = min dist-list
+    ;;if this is a junction point, make shortest decision
+    let temp-dist []
+    let comparing-paths []
+    foreach paths
     [
-      set to-point one-of points with [label = item index plab-list]
+      ;;select junction label and compare with from-point label
+      ;;if same, then put them in a new array so that we can compare the distance (trimming)
+      ;;store temporarily the distances into an array to find minimum for later
+      if item 1 ? = [label] of from-point
+      [
+        set comparing-paths lput ? comparing-paths
+        set temp-dist lput item 0 ? temp-dist
+      ]
     ]
-    set index (index + 1)
+    ;;now i get the shortest route and assign the to-point value
+    let shortest-path []
+    foreach comparing-paths
+    [
+      ;;get out the minimum distance index
+      if item 0 ? = min temp-dist
+      [
+        set shortest-path ?
+      ]
+    ]
+    set to-point one-of points with [label = item 2 shortest-path]
+  ]
+  [
+    ;;this condition is if the point is a turning point, then just go forward
+    let temp ""
+    ask from-point [
+      set temp one-of out-link-neighbors
+    ]
+    set to-point temp
   ]
 end
 
@@ -236,8 +313,10 @@ to draw-points
 end
 
 to draw-roads
-  ;;route 1
+  
   ask points with [label = "start"] [ create-road-to one-of points with [label = "2"] ]
+  
+  ;;route 1
   ask points with [label = "2"] [ create-road-to one-of points with [label = "t1"] ]
   ask points with [label = "t1"] [ create-road-to one-of points with [label = "t2"] ]
   ask points with [label = "t2"] [ create-road-to one-of points with [label = "t3"] ]
@@ -277,12 +356,49 @@ to draw-roads
   ask points with [label = "6"] [ create-road-to one-of points with [label = "t17"] ]
   ask points with [label = "t17"] [ create-road-to one-of points with [label = "t10"] ]
   
-  ;;set link capacity
+  ;;set default road settings
   ask roads [
     set color black
     set capacity 10
     set vehicle-count 0
+    set thickness 0.3
+    set has-erp? false
   ]
+  
+  ;;draw erp1 coloring for links if enabled
+  if erp1
+  [
+    ask points with [label = "2"] [ ask out-link-to one-of points with [label = "t1"] [set color blue set has-erp? true] ]
+    ask points with [label = "t1"] [ ask out-link-to one-of points with [label = "t2"] [set color blue set has-erp? true] ]
+    ask points with [label = "t2"] [ ask out-link-to one-of points with [label = "t3"] [set color blue set has-erp? true] ]
+    ask points with [label = "t3"] [ ask out-link-to one-of points with [label = "end"] [set color blue set has-erp? true] ]
+  ]
+  
+  if erp2
+  [
+    ask points with [label = "2"] [ ask out-link-to one-of points with [label = "3"] [set color blue set has-erp? true] ]
+  ]
+  
+  if erp3
+  [
+    ask points with [label = "3"] [ ask out-link-to one-of points with [label = "t4"] [set color blue set has-erp? true] ]
+    ask points with [label = "t4"] [ ask out-link-to one-of points with [label = "4"] [set color blue set has-erp? true] ]  
+  ]
+  
+  if erp4
+  [
+    ask points with [label = "3"] [ ask out-link-to one-of points with [label = "t19"] [set color blue set has-erp? true] ]
+    ask points with [label = "t19"] [ ask out-link-to one-of points with [label = "6"] [set color blue set has-erp? true] ]    
+  ]
+  if erp5
+  [
+    ask points with [label = "4"] [ ask out-link-to one-of points with [label = "t12"] [set color blue set has-erp? true] ]
+    ask points with [label = "t12"] [ ask out-link-to one-of points with [label = "t13"] [set color blue set has-erp? true] ]
+    ask points with [label = "t13"] [ ask out-link-to one-of points with [label = "t14"] [set color blue set has-erp? true] ]
+    ask points with [label = "t14"] [ ask out-link-to one-of points with [label = "t15"] [set color blue set has-erp? true] ]
+    ask points with [label = "t15"] [ ask out-link-to one-of points with [label = "t3"] [set color blue set has-erp? true] ]
+  ]
+  
   
   ;;set path array for easier manipulation of calculating distances
   set paths
@@ -402,10 +518,10 @@ NIL
 1
 
 PLOT
-0
-47
-200
-197
+-1
+369
+199
+519
 distance travelled by all cars
 NIL
 NIL
@@ -418,6 +534,76 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot sum [distance-travelled] of vehicles"
+
+SWITCH
+1
+205
+104
+238
+erp1
+erp1
+0
+1
+-1000
+
+SWITCH
+2
+240
+105
+273
+erp2
+erp2
+1
+1
+-1000
+
+SWITCH
+3
+275
+106
+308
+erp3
+erp3
+0
+1
+-1000
+
+SWITCH
+1
+308
+104
+341
+erp4
+erp4
+1
+1
+-1000
+
+SWITCH
+1
+341
+104
+374
+erp5
+erp5
+1
+1
+-1000
+
+SLIDER
+0
+37
+172
+70
+num-vehicles
+num-vehicles
+0
+200
+50
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
