@@ -35,7 +35,7 @@ to go
   [
     ;;variance of both time-urgency and thriftiness will determine how wide the range of values from 0 to 1 each car will be
     ;;the higher the variance, the wider it will be, spread with specified middle value
-    create-vehicles 1 [
+    create-vehicles vehicle-flow-rate [
       let rand-t (random-float var-thrift)
       let t mid-thrift + rand-t
       if t > 1 [set t mid-thrift - rand-t]
@@ -55,7 +55,7 @@ to go
       set moving? false
     ]
   ]
-  set counter counter + 1
+  set counter counter + vehicle-flow-rate
   
   ask vehicles [
     if not reached-destination? from-point 
@@ -156,13 +156,13 @@ to go
             ]
           ]
         ]
-        
+        let speed (random speed-variation) + 1
         ifelse should-move?
         [
           set moving? true
-          fd 1
-          set step-taken (step-taken + 1)
-          set distance-travelled (distance-travelled + 1)
+          fd speed
+          set step-taken (step-taken + speed)
+          set distance-travelled (distance-travelled + speed)
         ]
         [
           set total-wait-count total-wait-count + 1
@@ -238,7 +238,7 @@ to set-path-of-no-erp
     ;;get the agentset of outlink neighbours, then select link with no erp.
     let temp ""
     let no-erp-link ""
-    ask from-point 
+    ask from-point
     [
       ask my-out-links
       [
@@ -452,7 +452,7 @@ to draw-roads
   ask points with [label = "t15"] [ create-road-to one-of points with [label = "t3"] ]
   ask points with [label = "t3"] [ create-road-to one-of points with [label = "end"] ]
   
-  ask points with [label = "2"] [ ask out-link-to one-of points with [label = "3"] [set capacity 6] ]
+  ask points with [label = "2"] [ ask out-link-to one-of points with [label = "3"] [set capacity 8] ]
   ask points with [label = "3"] [ ask out-link-to one-of points with [label = "t4"] [set capacity 4] ]
   ask points with [label = "t4"] [ ask out-link-to one-of points with [label = "4"] [set capacity 4] ]
   ask points with [label = "4"] [ ask out-link-to one-of points with [label = "t12"] [set capacity 4] ]
@@ -686,10 +686,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot sum [distance-travelled] of vehicles"
 
 SWITCH
-105
-265
-208
-298
+-1
+270
+102
+303
 erp1
 erp1
 0
@@ -697,10 +697,10 @@ erp1
 -1000
 
 SWITCH
-2
-240
-105
-273
+-4
+302
+99
+335
 erp2
 erp2
 1
@@ -708,10 +708,10 @@ erp2
 -1000
 
 SWITCH
-3
-275
-106
-308
+99
+303
+202
+336
 erp3
 erp3
 1
@@ -719,10 +719,10 @@ erp3
 -1000
 
 SWITCH
-1
-308
-104
-341
+-2
+336
+101
+369
 erp4
 erp4
 1
@@ -730,10 +730,10 @@ erp4
 -1000
 
 SWITCH
-1
-341
-104
-374
+101
+336
+204
+369
 erp5
 erp5
 1
@@ -749,62 +749,62 @@ num-vehicles
 num-vehicles
 0
 200
-98
+200
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-1
-190
-173
-223
+0
+166
+172
+199
 var-urgent
 var-urgent
 0
 1
-0.1
+0
 0.01
 1
 NIL
 HORIZONTAL
 
 SLIDER
-1
-156
-173
-189
+0
+133
+172
+166
 var-thrift
 var-thrift
 0
 1
-1
+0
 0.01
 1
 NIL
 HORIZONTAL
 
 SLIDER
-6
-111
-178
-144
+-2
+101
+170
+134
 mid-urgent
 mid-urgent
 0
 1
-1
+0.01
 0.01
 1
 NIL
 HORIZONTAL
 
 SLIDER
-5
-77
-177
-110
+-1
+68
+171
+101
 mid-thrift
 mid-thrift
 0
@@ -887,6 +887,36 @@ route5
 17
 1
 11
+
+SLIDER
+-1
+201
+171
+234
+vehicle-flow-rate
+vehicle-flow-rate
+0
+20
+1
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+0
+234
+172
+267
+speed-variation
+speed-variation
+0
+5
+0
+1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
