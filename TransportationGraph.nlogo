@@ -15,7 +15,6 @@ to setup
   
   draw-points
   draw-roads
-  layout-erp
   
   set counter 0
   
@@ -46,20 +45,26 @@ to go
       set step-taken 0
       set step-required 0
       set distance-travelled 0
-      set moving? true
+      set moving? false
     ]
   ]
   set counter counter + 1
   
   ask vehicles [
     if not reached-destination? from-point 
-    and moving?
+    
     [
       if step-taken = 0
       [
         let temp 0
         let prob-time random-float 1
         let prob-thrift random-float 1
+        
+        ;;if neither happens just random it, otherwise overwrite
+        ask from-point [
+          set temp one-of out-link-neighbors
+        ]
+        set to-point temp
         ;;time urgency will determine probability at which the car will choose the shorter distance\
         ;;thriftiness will determine the probability which the car will choose the non-ERP road
         ;;if either variable has higher importance, then it will have priority if both occurs.
@@ -87,13 +92,36 @@ to go
           ]
         ]
         
-        ;;if neither happens just random it
-        if prob-time > time-urgency and prob-thrift > thrift
-        [
-          ask from-point [
-            set temp one-of out-link-neighbors
+        ;;do a check on all roads from point to point of those that are diversions, if one is full and the other is not, use the alternative.
+        ;;first i check if there is a full road.
+        let full-road-count 0
+        ask from-point 
+        [ 
+          if count my-out-links = 2
+          [
+            ask my-out-links
+            [
+              if v-count = capacity
+              [
+                set full-road-count (full-road-count + 1)
+              ]
+            ] 
           ]
-          set to-point temp
+        ]
+        ;;if only one is full, just set the other as alternative route and go
+        
+        if full-road-count = 1
+        [
+          let temp-divert ""
+          ask from-point
+          [
+            ask my-out-links with [v-count < capacity]
+            [
+              show "alternative chosen"
+              set temp-divert end2
+            ]
+          ]
+          set to-point temp-divert
         ]
         ;;face the point and set required distance
         face to-point
@@ -103,42 +131,50 @@ to go
       
       ifelse step-taken < step-required
       [
+        ;;check if there is allowable capacity on the road, if no don't move
+        ;;of course only at the start of the node then you do this
+        let should-move? moving?
+        let temp to-point
+        ask from-point 
+        [
+          ask out-link-to temp 
+          [
+            if v-count < capacity and not should-move?
+            [
+              set v-count v-count + 1
+              set should-move? true
+            ]
+            
+          ]
+        ]
         
-        fd 1
-        set step-taken (step-taken + 1)
-        set distance-travelled (distance-travelled + 1) 
-;        ;;check if there is allowable capacity on the road, if no don't move
-;        ;;of course only at the start of the node then you do this
-;        let should-move? moving?
-;        let temp to-point
-;        ask from-point 
-;        [
-;          ask out-link-to temp 
-;          [
-;            ifelse v-count < capacity
-;            [
-;              set v-count v-count + 1
-;              set should-move? true
-;            ]
-;            [
-;              set should-move? false
-;            ]
-;          ]
-;        ]
-;        
-;        ifelse should-move?
-;        [
-;          set moving? true
-;          fd 1
-;          set step-taken (step-taken + 1)
-;          set distance-travelled (distance-travelled + 1) 
-;        ]
-;        [
-;          set moving? false
-;        ]
+        ifelse should-move?
+        [
+          set moving? true
+          fd 1
+          set step-taken (step-taken + 1)
+          set distance-travelled (distance-travelled + 1) 
+        ]
+        [
+          set moving? false
+        ]
       ]
       [
         set step-taken 0
+        ;;upon reaching, release capacity spaces for road
+        let temp to-point
+        ask from-point 
+        [
+          ask out-link-to temp 
+          [
+            if v-count >= capacity
+            [
+              set v-count v-count - 1
+             
+            ]
+            
+          ]
+        ]
         set from-point to-point
         move-to to-point
        ]
@@ -160,7 +196,6 @@ to set-path-of-no-erp
     ;;get the agentset of outlink neighbours, then select link with no erp.
     let temp ""
     let no-erp-link ""
-;    ask [links] of from-point 
     ask from-point 
     [
       ask my-out-links
@@ -169,6 +204,11 @@ to set-path-of-no-erp
         [
           set temp end2
         ]
+      ]
+      ;;if all are erp, then random
+      if temp = ""
+      [
+        set temp one-of out-link-neighbors
       ]
     ]
     set to-point temp
@@ -386,8 +426,8 @@ to draw-roads
   
   ;;set default road settings
   ask roads [
-    set color black
     set capacity 10
+    set color black
     set v-count 0
     set thickness 0.3
     set has-erp? false
@@ -462,9 +502,6 @@ to draw-roads
     set p-index (p-index + 1)
   ]
   
-end
-
-to layout-erp
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -581,7 +618,7 @@ SWITCH
 273
 erp2
 erp2
-1
+0
 1
 -1000
 
@@ -642,7 +679,7 @@ var-urgent
 var-urgent
 0
 1
-0
+1
 0.01
 1
 NIL
@@ -657,7 +694,7 @@ var-thrift
 var-thrift
 0
 1
-0
+0.32
 0.01
 1
 NIL
