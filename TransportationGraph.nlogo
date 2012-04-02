@@ -1,4 +1,4 @@
-globals [point-locations destination-point-locations paths p-labels t-labels]
+globals [point-locations destination-point-locations paths p-labels t-labels counter]
 
 breed [vehicles vehicle]
 breed [points point]
@@ -17,34 +17,40 @@ to setup
   draw-roads
   layout-erp
   
-  ;;variance of both time-urgency and thriftiness will determine how wide the range of values from 0 to 1 each car will be
-  ;;the higher the variance, the wider it will be, spread with 0.5 in the middle
-
-  create-vehicles num-vehicles [
-    let rand-t (random-float var-thrift)
-    let t mid-thrift + rand-t
-    if t > 1 [set t mid-thrift - rand-t]
-    
-    let rand-u (random-float var-urgent)
-    let u mid-urgent + rand-u
-    if u > 1 [set u mid-urgent - rand-u]
-      
-    set thrift t
-    set time-urgency u
-    setxy 23 15
-    set shape "car"
-    set from-point one-of points with [label = "start"]
-    set step-taken 0
-    set step-required 0
-    set distance-travelled 0
-    set moving? true
-  ]
+  set counter 0
   
   import-drawing "map.png"
   
 end
 
 to go
+  ;;i generate number of vehicles by counter value. one vehicle per go until maximum
+  if counter < num-vehicles
+  [
+    ;;variance of both time-urgency and thriftiness will determine how wide the range of values from 0 to 1 each car will be
+    ;;the higher the variance, the wider it will be, spread with 0.5 in the middle
+    create-vehicles 1 [
+      let rand-t (random-float var-thrift)
+      let t mid-thrift + rand-t
+      if t > 1 [set t mid-thrift - rand-t]
+      
+      let rand-u (random-float var-urgent)
+      let u mid-urgent + rand-u
+      if u > 1 [set u mid-urgent - rand-u]
+        
+      set thrift t
+      set time-urgency u
+      setxy 23 15
+      set shape "car"
+      set from-point one-of points with [label = "start"]
+      set step-taken 0
+      set step-required 0
+      set distance-travelled 0
+      set moving? true
+    ]
+  ]
+  set counter counter + 1
+  
   ask vehicles [
     if not reached-destination? from-point 
     and moving?
@@ -97,37 +103,45 @@ to go
       
       ifelse step-taken < step-required
       [
-        ;;check if there is allowable capacity on the road, if no don't move
-        ;;of course only at the start of the node then you do this
-        let should-move? false
-        if step-taken = 0
-        [
-          ask from-point 
-          [
-            ask out-link-to to-point 
-            [
-              ifelse v-count <= capacity
-              [
-                set should-move? true
-              ]
-              [
-                set should-move? false
-              ]
-            ]
-          ]
-        ]
-        if should-move?
-        [
-          fd 1
-          set step-taken (step-taken + 1)
-          set distance-travelled (distance-travelled + 1) 
-        ]
+        
+        fd 1
+        set step-taken (step-taken + 1)
+        set distance-travelled (distance-travelled + 1) 
+;        ;;check if there is allowable capacity on the road, if no don't move
+;        ;;of course only at the start of the node then you do this
+;        let should-move? moving?
+;        let temp to-point
+;        ask from-point 
+;        [
+;          ask out-link-to temp 
+;          [
+;            ifelse v-count < capacity
+;            [
+;              set v-count v-count + 1
+;              set should-move? true
+;            ]
+;            [
+;              set should-move? false
+;            ]
+;          ]
+;        ]
+;        
+;        ifelse should-move?
+;        [
+;          set moving? true
+;          fd 1
+;          set step-taken (step-taken + 1)
+;          set distance-travelled (distance-travelled + 1) 
+;        ]
+;        [
+;          set moving? false
+;        ]
       ]
       [
         set step-taken 0
         set from-point to-point
         move-to to-point
-      ]
+       ]
 
     ]
   ]
@@ -613,7 +627,7 @@ num-vehicles
 num-vehicles
 0
 200
-94
+98
 1
 1
 NIL
@@ -658,7 +672,7 @@ mid-urgent
 mid-urgent
 0
 1
-1
+0.46
 0.01
 1
 NIL
