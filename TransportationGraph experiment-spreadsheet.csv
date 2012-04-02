@@ -1,0 +1,13 @@
+"BehaviorSpace results (NetLogo 5.0RC6)"
+"TransportationGraph.nlogo"
+"experiment"
+"04/02/2012 11:47:06:792 +0800"
+"min-pxcor","max-pxcor","min-pycor","max-pycor"
+"-29","29","-22","22"
+"[run number]","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30"
+"var-urgent","0.1","0.1","0.1","0.2","0.2","0.2","0.30000000000000004","0.30000000000000004","0.30000000000000004","0.4","0.4","0.4","0.5","0.5","0.5","0.6","0.6","0.6","0.7000000000000001","0.7000000000000001","0.7000000000000001","0.8","0.8","0.8","0.9","0.9","0.9","1","1","1"
+"mid-urgent","0.2","0.5","1","0.2","0.5","1","0.2","0.5","1","0.2","0.5","1","0.2","0.5","1","0.2","0.5","1","0.2","0.5","1","0.2","0.5","1","0.2","0.5","1","0.2","0.5","1"
+"[steps]","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000","1000"
+
+"[initial & final values]","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count","total-wait-count"
+,"5140","5195","5323","5067","5255","5250","5190","5241","5229","5089","5206","5220","5091","5214","5200","5132","5215","5330","5202","5411","5142","5212","5159","5142","5118","5137","5104","5131","5204","5155"

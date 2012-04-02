@@ -438,8 +438,8 @@ to draw-roads
   ;;set capacity for road
   ask points with [label = "2"] [ ask out-link-to one-of points with [label = "t1"] [set capacity 8] ]
   ask points with [label = "t1"] [ ask out-link-to one-of points with [label = "t2"] [set capacity 8] ]
-  ask points with [label = "t2"] [ ask out-link-to one-of points with [label = "t3"] [set capacity 4] ]
-  ask points with [label = "t3"] [ ask out-link-to one-of points with [label = "end"] [set capacity 3] ]
+  ask points with [label = "t2"] [ ask out-link-to one-of points with [label = "t3"] [set capacity 8] ]
+  ask points with [label = "t3"] [ ask out-link-to one-of points with [label = "end"] [set capacity 8] ]
 
   ;;route 2 decision at point 2
   ask points with [label = "2"] [ create-road-to one-of points with [label = "3"] ]
@@ -455,11 +455,11 @@ to draw-roads
   ask points with [label = "2"] [ ask out-link-to one-of points with [label = "3"] [set capacity 6] ]
   ask points with [label = "3"] [ ask out-link-to one-of points with [label = "t4"] [set capacity 4] ]
   ask points with [label = "t4"] [ ask out-link-to one-of points with [label = "4"] [set capacity 4] ]
-  ask points with [label = "4"] [ ask out-link-to one-of points with [label = "t12"] [set capacity 2] ]
-  ask points with [label = "t12"] [ ask out-link-to one-of points with [label = "t13"] [set capacity 4] ]
+  ask points with [label = "4"] [ ask out-link-to one-of points with [label = "t12"] [set capacity 4] ]
+  ask points with [label = "t12"] [ ask out-link-to one-of points with [label = "t13"] [set capacity 3] ]
   ask points with [label = "t13"] [ ask out-link-to one-of points with [label = "t14"] [set capacity 3] ]
-  ask points with [label = "t14"] [ ask out-link-to one-of points with [label = "t15"] [set capacity 2] ]
-  ask points with [label = "t15"] [ ask out-link-to one-of points with [label = "t3"] [set capacity 4] ]    
+  ask points with [label = "t14"] [ ask out-link-to one-of points with [label = "t15"] [set capacity 3] ]
+  ask points with [label = "t15"] [ ask out-link-to one-of points with [label = "t3"] [set capacity 3] ]    
   ask points with [label = "t3"] [ ask out-link-to one-of points with [label = "end"] [set capacity 3] ]   
   
   ;;route 3 decision at point 4
@@ -473,14 +473,14 @@ to draw-roads
   ask points with [label = "t16"] [ create-road-to one-of points with [label = "end"] ]
 
 ;;capcity
-  ask points with [label = "4"] [ ask out-link-to one-of points with [label = "t18"] [set capacity 6] ]
-  ask points with [label = "t18"] [ ask out-link-to one-of points with [label = "t5"] [set capacity 4] ]
-  ask points with [label = "t5"] [ ask out-link-to one-of points with [label = "t9"] [set capacity 4] ]
+  ask points with [label = "4"] [ ask out-link-to one-of points with [label = "t18"] [set capacity 3] ]
+  ask points with [label = "t18"] [ ask out-link-to one-of points with [label = "t5"] [set capacity 2] ]
+  ask points with [label = "t5"] [ ask out-link-to one-of points with [label = "t9"] [set capacity 2] ]
   ask points with [label = "t9"] [ ask out-link-to one-of points with [label = "t6"] [set capacity 2] ]
   ask points with [label = "t6"] [ ask out-link-to one-of points with [label = "t10"] [set capacity 2] ]
-  ask points with [label = "t10"] [ ask out-link-to one-of points with [label = "t11"] [set capacity 4] ]
-  ask points with [label = "t11"] [ ask out-link-to one-of points with [label = "t16"] [set capacity 3] ]
-  ask points with [label = "t16"] [ ask out-link-to one-of points with [label = "end"] [set capacity 2] ]  
+  ask points with [label = "t10"] [ ask out-link-to one-of points with [label = "t11"] [set capacity 6] ]
+  ask points with [label = "t11"] [ ask out-link-to one-of points with [label = "t16"] [set capacity 6] ]
+  ask points with [label = "t16"] [ ask out-link-to one-of points with [label = "end"] [set capacity 8] ]  
     
   ;;route 4 decision at point 3
   ask points with [label = "3"] [ create-road-to one-of points with [label = "t19"] ]
@@ -494,11 +494,11 @@ to draw-roads
   
  ;;capacity
   ask points with [label = "3"] [ ask out-link-to one-of points with [label = "t19"] [set capacity 6] ]
-  ask points with [label = "t19"] [ ask out-link-to one-of points with [label = "6"] [set capacity 4] ]
-  ask points with [label = "6"] [ ask out-link-to one-of points with [label = "t7"] [set capacity 4] ]
+  ask points with [label = "t19"] [ ask out-link-to one-of points with [label = "6"] [set capacity 8] ]
+  ask points with [label = "6"] [ ask out-link-to one-of points with [label = "t7"] [set capacity 2] ]
   ask points with [label = "t7"] [ ask out-link-to one-of points with [label = "t8"] [set capacity 2] ]
-  ask points with [label = "t8"] [ ask out-link-to one-of points with [label = "t9"] [set capacity 4] ]
-  ask points with [label = "6"] [ ask out-link-to one-of points with [label = "t7"] [set capacity 3] ]
+  ask points with [label = "t8"] [ ask out-link-to one-of points with [label = "t9"] [set capacity 2] ]
+  ask points with [label = "6"] [ ask out-link-to one-of points with [label = "t7"] [set capacity 2] ]
   ask points with [label = "t7"] [ ask out-link-to one-of points with [label = "t8"] [set capacity 2] ]
   
   ;;route 5 decision at point 6
@@ -506,7 +506,7 @@ to draw-roads
   ask points with [label = "t17"] [ create-road-to one-of points with [label = "t10"] ]
 
   ask points with [label = "6"] [ ask out-link-to one-of points with [label = "t17"] [set capacity 6] ]
-  ask points with [label = "t17"] [ ask out-link-to one-of points with [label = "t10"] [set capacity 4] ]
+  ask points with [label = "t17"] [ ask out-link-to one-of points with [label = "t10"] [set capacity 6] ]
 
   
   ;;set default road settings
@@ -703,7 +703,7 @@ SWITCH
 273
 erp2
 erp2
-1
+0
 1
 -1000
 
@@ -714,7 +714,7 @@ SWITCH
 308
 erp3
 erp3
-1
+0
 1
 -1000
 
@@ -725,7 +725,7 @@ SWITCH
 341
 erp4
 erp4
-1
+0
 1
 -1000
 
@@ -749,7 +749,7 @@ num-vehicles
 num-vehicles
 0
 200
-138
+200
 1
 1
 NIL
@@ -794,7 +794,7 @@ mid-urgent
 mid-urgent
 0
 1
-0.3
+1
 0.01
 1
 NIL
@@ -809,7 +809,7 @@ mid-thrift
 mid-thrift
 0
 1
-0.41
+0.5
 0.01
 1
 NIL
@@ -820,7 +820,7 @@ PLOT
 519
 202
 669
-plot 1
+Total Number of Cars passing Through Routes
 NIL
 NIL
 0.0
@@ -1221,6 +1221,146 @@ NetLogo 5.0RC6
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
+<experiments>
+  <experiment name="ERP OFF-Urgency" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-urgent">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Varying ERP-Urgency" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-urgent">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="ERP1 ON-Urgency" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-urgent">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="ERP1and2-Urgency" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-urgent">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="ALL ERPs ON-Urgency" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-urgent">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Thriftiness and Urgency - ALL ERP on" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="100"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-urgent">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-thrift">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="ALL ERP ON-Thriftiness" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-thrift">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Only ERP1 ON-Thriftiness" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-thrift">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="ERP1&amp;2 ON- Thriftiness" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-thrift">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="ERP1,2,3-Thriftiness" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-thrift">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="ERP1,2,3,4-Thriftiness" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="1000"/>
+    <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-thrift">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+</experiments>
 @#$#@#$#@
 @#$#@#$#@
 default
