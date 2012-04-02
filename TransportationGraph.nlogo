@@ -692,7 +692,7 @@ SWITCH
 298
 erp1
 erp1
-1
+0
 1
 -1000
 
@@ -703,7 +703,7 @@ SWITCH
 273
 erp2
 erp2
-0
+1
 1
 -1000
 
@@ -714,7 +714,7 @@ SWITCH
 308
 erp3
 erp3
-0
+1
 1
 -1000
 
@@ -725,7 +725,7 @@ SWITCH
 341
 erp4
 erp4
-0
+1
 1
 -1000
 
@@ -809,7 +809,7 @@ mid-thrift
 mid-thrift
 0
 1
-0.5
+1
 0.01
 1
 NIL
@@ -1353,6 +1353,29 @@ NetLogo 5.0RC6
     <go>go</go>
     <timeLimit steps="1000"/>
     <metric>total-wait-count</metric>
+    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-thrift">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Urgency&amp;Thriftiness-ERP1ON" repetitions="1" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="10"/>
+    <metric>total-wait-count</metric>
+    <metric>route1</metric>
+    <metric>route2</metric>
+    <metric>route3</metric>
+    <metric>route4</metric>
+    <metric>route5</metric>
+    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
+    <enumeratedValueSet variable="mid-urgent">
+      <value value="0.2"/>
+      <value value="0.5"/>
+      <value value="1"/>
+    </enumeratedValueSet>
     <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
     <enumeratedValueSet variable="mid-thrift">
       <value value="0.2"/>
