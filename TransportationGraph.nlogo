@@ -1,4 +1,4 @@
-globals [point-locations destination-point-locations paths p-labels t-labels counter]
+globals [point-locations destination-point-locations paths p-labels t-labels counter total-wait-count]
 
 breed [vehicles vehicle]
 breed [points point]
@@ -16,6 +16,7 @@ to setup
   draw-points
   draw-roads
   
+  set total-wait-count 0
   set counter 0
   
   import-drawing "map.png"
@@ -45,7 +46,7 @@ to go
       set step-taken 0
       set step-required 0
       set distance-travelled 0
-      set moving? false
+      set moving? true
     ]
   ]
   set counter counter + 1
@@ -101,11 +102,11 @@ to go
           [
             ask my-out-links
             [
-              if v-count = capacity
+              if v-count >= capacity
               [
                 set full-road-count (full-road-count + 1)
               ]
-            ] 
+            ]
           ]
         ]
         ;;if only one is full, just set the other as alternative route and go
@@ -128,7 +129,7 @@ to go
         set step-required (distance to-point - 1)
 
       ]
-      
+      ;;------------------------------------------------- VCOUNT starts here
       ifelse step-taken < step-required
       [
         ;;check if there is allowable capacity on the road, if no don't move
@@ -137,9 +138,9 @@ to go
         let temp to-point
         ask from-point 
         [
-          ask out-link-to temp 
+          ask out-link-to temp
           [
-            if v-count < capacity and not should-move?
+            if v-count < capacity
             [
               set v-count v-count + 1
               set should-move? true
@@ -153,9 +154,10 @@ to go
           set moving? true
           fd 1
           set step-taken (step-taken + 1)
-          set distance-travelled (distance-travelled + 1) 
+          set distance-travelled (distance-travelled + 1)
         ]
         [
+          set total-wait-count total-wait-count + 1
           set moving? false
         ]
       ]
@@ -165,16 +167,16 @@ to go
         let temp to-point
         ask from-point 
         [
-          ask out-link-to temp 
+          ask out-link-to temp
           [
             if v-count >= capacity
             [
               set v-count v-count - 1
-             
             ]
             
           ]
         ]
+
         set from-point to-point
         move-to to-point
        ]
@@ -426,7 +428,7 @@ to draw-roads
   
   ;;set default road settings
   ask roads [
-    set capacity 10
+    set capacity 7
     set color black
     set v-count 0
     set thickness 0.3
@@ -694,7 +696,7 @@ var-thrift
 var-thrift
 0
 1
-0.32
+0.72
 0.01
 1
 NIL
@@ -729,6 +731,24 @@ mid-thrift
 1
 NIL
 HORIZONTAL
+
+PLOT
+2
+519
+202
+669
+plot 1
+NIL
+NIL
+0.0
+10.0
+0.0
+10.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot total-wait-count"
 
 @#$#@#$#@
 ## WHAT IS IT?
