@@ -749,7 +749,7 @@ num-vehicles
 num-vehicles
 0
 200
-200
+98
 1
 1
 NIL
@@ -764,7 +764,7 @@ var-urgent
 var-urgent
 0
 1
-1
+0.1
 0.01
 1
 NIL
@@ -1312,11 +1312,15 @@ NetLogo 5.0RC6
       <value value="1"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="Only ERP1 ON-Thriftiness" repetitions="1" runMetricsEveryStep="false">
+  <experiment name="Only ERP1 ON-Thriftiness-routes" repetitions="1" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <timeLimit steps="1000"/>
-    <metric>total-wait-count</metric>
+    <metric>route1</metric>
+    <metric>route2</metric>
+    <metric>route3</metric>
+    <metric>route4</metric>
+    <metric>route5</metric>
     <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
     <enumeratedValueSet variable="mid-thrift">
       <value value="0.2"/>
