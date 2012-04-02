@@ -3,11 +3,10 @@ globals [point-locations destination-point-locations paths p-labels t-labels]
 breed [vehicles vehicle]
 breed [points point]
 breed [turn-points turn-point]
-breed [erps erp]
 directed-link-breed [roads road]
 
 vehicles-own [thrift time-urgency from-point to-point step-required step-taken distance-travelled moving?]
-roads-own [has-erp? capacity vehicle-count]
+roads-own [has-erp? capacity v-count]
 
 to setup
   ca
@@ -18,9 +17,20 @@ to setup
   draw-roads
   layout-erp
   
+  ;;variance of both time-urgency and thriftiness will determine how wide the range of values from 0 to 1 each car will be
+  ;;the higher the variance, the wider it will be, spread with 0.5 in the middle
+
   create-vehicles num-vehicles [
-    set thrift 1
-    set time-urgency 0
+    let rand-t (random-float var-thrift)
+    let t mid-thrift + rand-t
+    if t > 1 [set t mid-thrift - rand-t]
+    
+    let rand-u (random-float var-urgent)
+    let u mid-urgent + rand-u
+    if u > 1 [set u mid-urgent - rand-u]
+      
+    set thrift t
+    set time-urgency u
     setxy 23 15
     set shape "car"
     set from-point one-of points with [label = "start"]
@@ -44,14 +54,18 @@ to go
         let temp 0
         let prob-time random-float 1
         let prob-thrift random-float 1
-        ;;time urgency will determine probability at which the car will choose the shorter distance
+        ;;time urgency will determine probability at which the car will choose the shorter distance\
+        ;;thriftiness will determine the probability which the car will choose the non-ERP road
+        ;;if either variable has higher importance, then it will have priority if both occurs.
         ifelse prob-time <= time-urgency and prob-thrift <= thrift
         [
           ;;do the priority one
           ifelse time-urgency > thrift
           [
+            set-shortest-path
           ]
           [
+            set-path-of-no-erp
           ]
         ]
         [
@@ -67,22 +81,47 @@ to go
           ]
         ]
         
+        ;;if neither happens just random it
+        if prob-time > time-urgency and prob-thrift > thrift
+        [
+          ask from-point [
+            set temp one-of out-link-neighbors
+          ]
+          set to-point temp
+        ]
         ;;face the point and set required distance
         face to-point
         set step-required (distance to-point - 1)
-        ;;thriftiness will determine the probability which the car will choose the non-ERP road
-        
-        ;;if either variable has higher importance, then it will have priority if both occurs.
-        
-        
 
       ]
       
       ifelse step-taken < step-required
       [
-        fd 1
-        set step-taken (step-taken + 1)
-        set distance-travelled (distance-travelled + 1) 
+        ;;check if there is allowable capacity on the road, if no don't move
+        ;;of course only at the start of the node then you do this
+        let should-move? false
+        if step-taken = 0
+        [
+          ask from-point 
+          [
+            ask out-link-to to-point 
+            [
+              ifelse v-count <= capacity
+              [
+                set should-move? true
+              ]
+              [
+                set should-move? false
+              ]
+            ]
+          ]
+        ]
+        if should-move?
+        [
+          fd 1
+          set step-taken (step-taken + 1)
+          set distance-travelled (distance-travelled + 1) 
+        ]
       ]
       [
         set step-taken 0
@@ -131,32 +170,7 @@ to set-path-of-no-erp
 end
 
 to set-shortest-path
-  ;;do shorter distance logic
-;  ;;first get minimum distance of all points in junction
-;  let dist-list []
-;  let plab-list []
-;  let fp-x [xcor] of from-point
-;  let fp-y [ycor] of from-point
-;  ask from-point [
-;    ask out-link-neighbors 
-;    [
-;      set dist-list lput (distancexy fp-x fp-y) dist-list
-;      set plab-list lput label plab-list
-;    ]
-;  ]
-;  ;;show dist-list
-;  ;;get the shortest route distance
-;  let index 0
-;  foreach dist-list
-;  [
-;    ;;get point label of minimum distance and set the to-point variable
-;    if ? = min dist-list
-;    [
-;      set to-point one-of points with [label = item index plab-list]
-;    ]
-;    set index (index + 1)
-;  ]
-  
+
   ;;extract out start and end
   let ep-labels p-labels
   set ep-labels remove-item 4 ep-labels
@@ -360,7 +374,7 @@ to draw-roads
   ask roads [
     set color black
     set capacity 10
-    set vehicle-count 0
+    set v-count 0
     set thickness 0.3
     set has-erp? false
   ]
@@ -536,10 +550,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot sum [distance-travelled] of vehicles"
 
 SWITCH
-1
-205
-104
-238
+105
+265
+208
+298
 erp1
 erp1
 0
@@ -599,8 +613,68 @@ num-vehicles
 num-vehicles
 0
 200
-50
+94
 1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+1
+190
+173
+223
+var-urgent
+var-urgent
+0
+1
+0
+0.01
+1
+NIL
+HORIZONTAL
+
+SLIDER
+1
+156
+173
+189
+var-thrift
+var-thrift
+0
+1
+0
+0.01
+1
+NIL
+HORIZONTAL
+
+SLIDER
+6
+111
+178
+144
+mid-urgent
+mid-urgent
+0
+1
+1
+0.01
+1
+NIL
+HORIZONTAL
+
+SLIDER
+5
+77
+177
+110
+mid-thrift
+mid-thrift
+0
+1
+0.41
+0.01
 1
 NIL
 HORIZONTAL
