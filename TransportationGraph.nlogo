@@ -1,4 +1,4 @@
-globals [point-locations destination-point-locations paths p-labels t-labels counter total-wait-count]
+globals [point-locations destination-point-locations paths p-labels t-labels counter total-wait-count route1 route2 route3 route4 route5]
 
 breed [vehicles vehicle]
 breed [points point]
@@ -19,6 +19,12 @@ to setup
   set total-wait-count 0
   set counter 0
   
+  set route1 0
+  set route2 0
+  set route3 0
+  set route4 0
+  set route5 0
+  
   import-drawing "map.png"
   
 end
@@ -28,7 +34,7 @@ to go
   if counter < num-vehicles
   [
     ;;variance of both time-urgency and thriftiness will determine how wide the range of values from 0 to 1 each car will be
-    ;;the higher the variance, the wider it will be, spread with 0.5 in the middle
+    ;;the higher the variance, the wider it will be, spread with specified middle value
     create-vehicles 1 [
       let rand-t (random-float var-thrift)
       let t mid-thrift + rand-t
@@ -46,7 +52,7 @@ to go
       set step-taken 0
       set step-required 0
       set distance-travelled 0
-      set moving? true
+      set moving? false
     ]
   ]
   set counter counter + 1
@@ -118,7 +124,7 @@ to go
           [
             ask my-out-links with [v-count < capacity]
             [
-              show "alternative chosen"
+              ;;show "alternative chosen"
               set temp-divert end2
             ]
           ]
@@ -135,17 +141,19 @@ to go
         ;;check if there is allowable capacity on the road, if no don't move
         ;;of course only at the start of the node then you do this
         let should-move? moving?
-        let temp to-point
+        let temp-cap to-point
         ask from-point 
         [
-          ask out-link-to temp
+          ask out-link-to temp-cap
           [
             if v-count < capacity
             [
-              set v-count v-count + 1
+              if not should-move?
+              [
+                set v-count v-count + 1
+              ]
               set should-move? true
             ]
-            
           ]
         ]
         
@@ -159,6 +167,7 @@ to go
         [
           set total-wait-count total-wait-count + 1
           set moving? false
+          set should-move? false
         ]
       ]
       [
@@ -169,15 +178,46 @@ to go
         [
           ask out-link-to temp
           [
-            if v-count >= capacity
-            [
+;            if v-count >= capacity
+;            [
               set v-count v-count - 1
-            ]
+;            ]
             
           ]
         ]
 
         set from-point to-point
+        set moving? false
+        ;;this is meant for the purpose of my counter of cars passing by the route
+        let route-count-points ["t2" "t15" "t5" "t17" "t8"]
+        let index 0
+        while [index < length route-count-points]
+        [
+          if [label] of to-point = item index route-count-points
+          [
+            if index = 0
+            [
+              set route1 route1 + 1
+            ]
+            if index = 1
+            [ 
+              set route2 route2 + 1
+            ]
+            if index = 2
+            [
+              set route3 route3 + 1
+            ]
+            if index = 3
+            [
+              set route4 route4 + 1
+            ]
+            if index = 4
+            [
+              set route5 route5 + 1
+            ]
+          ]
+          set index index + 1
+        ]
         move-to to-point
        ]
 
@@ -386,11 +426,20 @@ to draw-roads
   
   ask points with [label = "start"] [ create-road-to one-of points with [label = "2"] ]
   
+  ;;capacity
+  ask points with [label = "start"] [ ask out-link-to one-of points with [label = "2"] [set capacity 10] ]
+  
   ;;route 1
   ask points with [label = "2"] [ create-road-to one-of points with [label = "t1"] ]
   ask points with [label = "t1"] [ create-road-to one-of points with [label = "t2"] ]
   ask points with [label = "t2"] [ create-road-to one-of points with [label = "t3"] ]
   ask points with [label = "t3"] [ create-road-to one-of points with [label = "end"] ]
+  
+  ;;set capacity for road
+  ask points with [label = "2"] [ ask out-link-to one-of points with [label = "t1"] [set capacity 8] ]
+  ask points with [label = "t1"] [ ask out-link-to one-of points with [label = "t2"] [set capacity 8] ]
+  ask points with [label = "t2"] [ ask out-link-to one-of points with [label = "t3"] [set capacity 4] ]
+  ask points with [label = "t3"] [ ask out-link-to one-of points with [label = "end"] [set capacity 3] ]
 
   ;;route 2 decision at point 2
   ask points with [label = "2"] [ create-road-to one-of points with [label = "3"] ]
@@ -403,6 +452,16 @@ to draw-roads
   ask points with [label = "t15"] [ create-road-to one-of points with [label = "t3"] ]
   ask points with [label = "t3"] [ create-road-to one-of points with [label = "end"] ]
   
+  ask points with [label = "2"] [ ask out-link-to one-of points with [label = "3"] [set capacity 6] ]
+  ask points with [label = "3"] [ ask out-link-to one-of points with [label = "t4"] [set capacity 4] ]
+  ask points with [label = "t4"] [ ask out-link-to one-of points with [label = "4"] [set capacity 4] ]
+  ask points with [label = "4"] [ ask out-link-to one-of points with [label = "t12"] [set capacity 2] ]
+  ask points with [label = "t12"] [ ask out-link-to one-of points with [label = "t13"] [set capacity 4] ]
+  ask points with [label = "t13"] [ ask out-link-to one-of points with [label = "t14"] [set capacity 3] ]
+  ask points with [label = "t14"] [ ask out-link-to one-of points with [label = "t15"] [set capacity 2] ]
+  ask points with [label = "t15"] [ ask out-link-to one-of points with [label = "t3"] [set capacity 4] ]    
+  ask points with [label = "t3"] [ ask out-link-to one-of points with [label = "end"] [set capacity 3] ]   
+  
   ;;route 3 decision at point 4
   ask points with [label = "4"] [ create-road-to one-of points with [label = "t18"] ]
   ask points with [label = "t18"] [ create-road-to one-of points with [label = "t5"] ]
@@ -412,7 +471,17 @@ to draw-roads
   ask points with [label = "t10"] [ create-road-to one-of points with [label = "t11"] ]
   ask points with [label = "t11"] [ create-road-to one-of points with [label = "t16"] ]
   ask points with [label = "t16"] [ create-road-to one-of points with [label = "end"] ]
-  
+
+;;capcity
+  ask points with [label = "4"] [ ask out-link-to one-of points with [label = "t18"] [set capacity 6] ]
+  ask points with [label = "t18"] [ ask out-link-to one-of points with [label = "t5"] [set capacity 4] ]
+  ask points with [label = "t5"] [ ask out-link-to one-of points with [label = "t9"] [set capacity 4] ]
+  ask points with [label = "t9"] [ ask out-link-to one-of points with [label = "t6"] [set capacity 2] ]
+  ask points with [label = "t6"] [ ask out-link-to one-of points with [label = "t10"] [set capacity 2] ]
+  ask points with [label = "t10"] [ ask out-link-to one-of points with [label = "t11"] [set capacity 4] ]
+  ask points with [label = "t11"] [ ask out-link-to one-of points with [label = "t16"] [set capacity 3] ]
+  ask points with [label = "t16"] [ ask out-link-to one-of points with [label = "end"] [set capacity 2] ]  
+    
   ;;route 4 decision at point 3
   ask points with [label = "3"] [ create-road-to one-of points with [label = "t19"] ]
   ask points with [label = "t19"] [ create-road-to one-of points with [label = "6"] ]
@@ -422,17 +491,31 @@ to draw-roads
   ask points with [label = "6"] [ create-road-to one-of points with [label = "t7"] ]
   ask points with [label = "t7"] [ create-road-to one-of points with [label = "t8"] ]
   
+  
+ ;;capacity
+  ask points with [label = "3"] [ ask out-link-to one-of points with [label = "t19"] [set capacity 6] ]
+  ask points with [label = "t19"] [ ask out-link-to one-of points with [label = "6"] [set capacity 4] ]
+  ask points with [label = "6"] [ ask out-link-to one-of points with [label = "t7"] [set capacity 4] ]
+  ask points with [label = "t7"] [ ask out-link-to one-of points with [label = "t8"] [set capacity 2] ]
+  ask points with [label = "t8"] [ ask out-link-to one-of points with [label = "t9"] [set capacity 4] ]
+  ask points with [label = "6"] [ ask out-link-to one-of points with [label = "t7"] [set capacity 3] ]
+  ask points with [label = "t7"] [ ask out-link-to one-of points with [label = "t8"] [set capacity 2] ]
+  
   ;;route 5 decision at point 6
   ask points with [label = "6"] [ create-road-to one-of points with [label = "t17"] ]
   ask points with [label = "t17"] [ create-road-to one-of points with [label = "t10"] ]
+
+  ask points with [label = "6"] [ ask out-link-to one-of points with [label = "t17"] [set capacity 6] ]
+  ask points with [label = "t17"] [ ask out-link-to one-of points with [label = "t10"] [set capacity 4] ]
+
   
   ;;set default road settings
   ask roads [
-    set capacity 7
     set color black
     set v-count 0
     set thickness 0.3
     set has-erp? false
+    
   ]
   
   ;;draw erp1 coloring for links if enabled
@@ -492,7 +575,7 @@ to draw-roads
     let dist 0
     while [index < (length in-between-points - 1)]
     [
-      ;;calc total distance 
+      ;;calc total distance
       ask one-of points with [label = item index in-between-points]
       [
         set dist (dist + distance one-of points with [label = item (index + 1) in-between-points])
@@ -609,7 +692,7 @@ SWITCH
 298
 erp1
 erp1
-0
+1
 1
 -1000
 
@@ -620,7 +703,7 @@ SWITCH
 273
 erp2
 erp2
-0
+1
 1
 -1000
 
@@ -631,7 +714,7 @@ SWITCH
 308
 erp3
 erp3
-0
+1
 1
 -1000
 
@@ -666,7 +749,7 @@ num-vehicles
 num-vehicles
 0
 200
-98
+138
 1
 1
 NIL
@@ -696,7 +779,7 @@ var-thrift
 var-thrift
 0
 1
-0.72
+1
 0.01
 1
 NIL
@@ -711,7 +794,7 @@ mid-urgent
 mid-urgent
 0
 1
-0.46
+0.3
 0.01
 1
 NIL
@@ -749,6 +832,61 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot total-wait-count"
+
+MONITOR
+214
+629
+271
+674
+NIL
+route1
+17
+1
+11
+
+MONITOR
+274
+630
+331
+675
+NIL
+route2
+17
+1
+11
+
+MONITOR
+336
+630
+393
+675
+NIL
+route3
+17
+1
+11
+
+MONITOR
+394
+630
+451
+675
+NIL
+route4
+17
+1
+11
+
+MONITOR
+455
+631
+512
+676
+NIL
+route5
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
