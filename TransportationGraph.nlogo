@@ -895,7 +895,7 @@ vehicle-flow-rate
 vehicle-flow-rate
 0
 20
-1
+20
 1
 1
 NIL
@@ -919,39 +919,77 @@ HORIZONTAL
 @#$#@#$#@
 ## WHAT IS IT?
 
-(a general understanding of what the model is trying to show or explain)
+Our model uses a specific part of Singapore Central Business District (CBD) area. We are modeling agents traveling from Collyer Quay to Keppel Road. To reach the destination (Keppel Road), agents (drivers) can choose several different routes, with differing travel time and whether or not the route has ERP installed along the roads. The map below shows the part of CBD we are modeling, as well as the starting and end point.
 
 ## HOW IT WORKS
 
-(what rules the agents use to create the overall behavior of the model)
+Drivers will take different routes depending on their level of thriftness and urgency, these levels are determined when they are generated, and these values will not change as they move. These values are not fully random, they are determined by mid-thrift, mid-urgent, var-thrift and var-urgent (refer to _HOW TO USE IT_ section to understand each variables.
+
+Each drivers make their **own** decisions at the junctions according to their thrfitness, urgency and the presence of an ERP.
+
 
 ## HOW TO USE IT
 
-(how to use the model, including a description of each of the items in the Interface tab)
+**num-vehicles**
+The number of vehicles that will be generated at the starting point for one run of the model.
+
+**mid-thrift**
+The level of thriftness of each driver.
+
+**mid-urgent**
+The level of urgency of each driver.
+
+**var-thrift**
+The amount of variation according to the thriftness level of the driver.
+_Example: If mid-thrift is 0.5 and var-thrift is 0.2, thriftness of each drivers generated can range between 0.3 to 0.7._
+
+**var-urgent**
+The amount of variation according to the urgency level of the driver.
+_Example: If mid-urgent is 0.5 and var-urgent is 0.2, urgency of each drivers generated can range between 0.3 to 0.7._
+
+**vehicle-flow-rate**
+The rate at which the cars will be generated.
+
+**speed-variation**
+The amount of variation according to the travelling speed of each car.
+
+**erp1, erp2, erp3, erp4, erp5**
+Determine if each ERP will be turned off or turned on.
 
 ## THINGS TO NOTICE
 
-(suggested things for the user to notice while running the model)
+**Plot**
+1. Average distance travelled by all cars
+2. Total number of wait-time for all cars
+
+**Monitor for route 1 to 5**
+This shows the cars which travelled that particular route.
 
 ## THINGS TO TRY
 
-(suggested things for the user to try to do (move sliders, switches, etc.) with the model)
+To represent the different times of the day (i.e. peak hour, non-peak hour, etc.), vary the **num-vehicles** & **vehicle-flow-rate** variables.
+
+Varying **var-thrift** & **var-urgent** will determine the individual characteristics of each drivers generate, the higher the variable values, the more variance we will expect from the drivers.
 
 ## EXTENDING THE MODEL
 
-(suggested things to add or change in the Code tab to make the model more complicated, detailed, accurate, etc.)
+Add additional determining variables which will affect how each individual drivers will make their decisions. 
 
-## NETLOGO FEATURES
+Prices can be adjusted for each ERPs, for some drivers, as long as the price of a particular ERP does not exceed their own threshold, they be willing to drive along that particular route even he/she has to pay for it.
 
-(interesting or unusual features of NetLogo that the model uses, particularly in the Code tab; or where workarounds were needed for missing features)
-
-## RELATED MODELS
-
-(models in the NetLogo Models Library and elsewhere which are of related interest)
+ERPs can be dynamically added into the model instead of having them at fixed positions. This will allow for more possibilities.
 
 ## CREDITS AND REFERENCES
 
-(a reference to the model's URL on the web if it has one, as well as any other necessary credits, citations, and links)
+Yap, J. (2005). Implementing road and congestion pricing- implementing road and congestion pricing- lessons from singapore lessons from singapore. Retrieved from http://www.internationaltransportforum.org/IntOrg/ecmt/urban/Tokyo05/Yap.pdf 
+
+(n.d.). Retrieved from http://app.mot.gov.sg/Land_Transport/Managing_Road_Use/Electronic_Road_Pricing.aspx
+
+(n.d.). Retrieved from http://en.wikipedia.org/wiki/Electronic_Road_Pricing 
+
+(n.d.). Retrieved from http://en.wikipedia.org/wiki/Agent-based_model 
+
+(n.d.). Retrieved from http://www.agent-based-models.com/blog/
 @#$#@#$#@
 default
 true
@@ -1245,7 +1283,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0RC6
+NetLogo 5.0RC5
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
