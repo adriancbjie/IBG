@@ -795,7 +795,7 @@ mid-urgent
 mid-urgent
 0
 1
-0.01
+0.9
 0.01
 1
 NIL
@@ -810,7 +810,7 @@ mid-thrift
 mid-thrift
 0
 1
-1
+0
 0.01
 1
 NIL
@@ -913,7 +913,7 @@ speed-variation
 speed-variation
 0
 5
-0
+5
 1
 1
 NIL
@@ -1253,170 +1253,27 @@ NetLogo 5.0RC6
 @#$#@#$#@
 @#$#@#$#@
 <experiments>
-  <experiment name="ERP OFF-Urgency" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="1000"/>
-    <metric>total-wait-count</metric>
-    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-urgent">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="Varying ERP-Urgency" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="1000"/>
-    <metric>total-wait-count</metric>
-    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-urgent">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="ERP1 ON-Urgency" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="1000"/>
-    <metric>total-wait-count</metric>
-    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-urgent">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="ERP1and2-Urgency" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="1000"/>
-    <metric>total-wait-count</metric>
-    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-urgent">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="ALL ERPs ON-Urgency" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="1000"/>
-    <metric>total-wait-count</metric>
-    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-urgent">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="Thriftiness and Urgency - ALL ERP on" repetitions="1" runMetricsEveryStep="false">
+  <experiment name="ThriftinessERP1" repetitions="1" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <timeLimit steps="100"/>
-    <metric>total-wait-count</metric>
-    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-urgent">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-thrift">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="ALL ERP ON-Thriftiness" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="1000"/>
-    <metric>total-wait-count</metric>
-    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-thrift">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="Only ERP1 ON-Thriftiness-routes" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="1000"/>
     <metric>route1</metric>
     <metric>route2</metric>
     <metric>route3</metric>
     <metric>route4</metric>
     <metric>route5</metric>
-    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-thrift">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
+    <steppedValueSet variable="mid-thrift" first="0.1" step="0.1" last="1"/>
   </experiment>
-  <experiment name="ERP1&amp;2 ON- Thriftiness" repetitions="1" runMetricsEveryStep="false">
+  <experiment name="UrgencyERP1" repetitions="1" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
-    <timeLimit steps="1000"/>
-    <metric>total-wait-count</metric>
-    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-thrift">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="ERP1,2,3-Thriftiness" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="1000"/>
-    <metric>total-wait-count</metric>
-    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-thrift">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="ERP1,2,3,4-Thriftiness" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="1000"/>
-    <metric>total-wait-count</metric>
-    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-thrift">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
-  <experiment name="Urgency&amp;Thriftiness-ERP1ON" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="10"/>
-    <metric>total-wait-count</metric>
+    <timeLimit steps="100"/>
     <metric>route1</metric>
     <metric>route2</metric>
     <metric>route3</metric>
     <metric>route4</metric>
     <metric>route5</metric>
-    <steppedValueSet variable="var-urgent" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-urgent">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
-    <steppedValueSet variable="var-thrift" first="0.1" step="0.1" last="1"/>
-    <enumeratedValueSet variable="mid-thrift">
-      <value value="0.2"/>
-      <value value="0.5"/>
-      <value value="1"/>
-    </enumeratedValueSet>
+    <steppedValueSet variable="mid-urgent" first="0.1" step="0.1" last="1"/>
   </experiment>
 </experiments>
 @#$#@#$#@
