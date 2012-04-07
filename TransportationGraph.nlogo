@@ -1,4 +1,4 @@
-globals [point-locations destination-point-locations paths p-labels t-labels counter total-wait-count route1 route2 route3 route4 route5]
+globals [avg-dist-travelled-per-car point-locations destination-point-locations paths p-labels t-labels counter total-wait-count route1 route2 route3 route4 route5]
 
 breed [vehicles vehicle]
 breed [points point]
@@ -223,6 +223,7 @@ to go
 
     ]
   ]
+  set avg-dist-travelled-per-car ((sum [distance-travelled] of vehicles) / num-vehicles)
   tick
 end
 
@@ -672,7 +673,7 @@ PLOT
 369
 199
 519
-distance travelled by all cars
+average distance travelled by all cars
 NIL
 NIL
 0.0
@@ -683,7 +684,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot sum [distance-travelled] of vehicles"
+"default" 1.0 0 -16777216 true "" "plot avg-dist-travelled-per-car"
 
 SWITCH
 -1
