@@ -1,4 +1,4 @@
-globals [avg-dist-travelled-per-car point-locations destination-point-locations paths p-labels t-labels counter total-wait-count route1 route2 route3 route4 route5]
+globals [avg-wait-count avg-dist-travelled-per-car point-locations destination-point-locations paths p-labels t-labels counter total-wait-count route1 route2 route3 route4 route5]
 
 breed [vehicles vehicle]
 breed [points point]
@@ -178,11 +178,7 @@ to go
         [
           ask out-link-to temp
           [
-;            if v-count >= capacity
-;            [
-              set v-count v-count - 1
-;            ]
-            
+            set v-count v-count - 1
           ]
         ]
 
@@ -224,6 +220,7 @@ to go
     ]
   ]
   set avg-dist-travelled-per-car ((sum [distance-travelled] of vehicles) / num-vehicles)
+  set avg-wait-count (total-wait-count / num-vehicles)
   tick
 end
 
@@ -704,7 +701,7 @@ SWITCH
 335
 erp2
 erp2
-1
+0
 1
 -1000
 
@@ -821,7 +818,7 @@ PLOT
 519
 202
 669
-Total Number of Cars passing Through Routes
+total number of wait-time for all cars
 NIL
 NIL
 0.0
@@ -832,7 +829,7 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot total-wait-count"
+"default" 1.0 0 -16777216 true "" "plot avg-wait-count"
 
 MONITOR
 214
