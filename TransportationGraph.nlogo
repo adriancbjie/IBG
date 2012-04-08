@@ -1,4 +1,4 @@
-globals [routes avg-wait-count avg-dist-travelled-per-car point-locations destination-point-locations paths p-labels t-labels counter total-wait-count route1 route2 route3 route4 route5]
+globals [avg-wait-count avg-dist-travelled-per-car point-locations destination-point-locations paths p-labels t-labels counter total-wait-count route1 route2 route3 route4 route5]
 
 breed [vehicles vehicle]
 breed [points point]
@@ -393,12 +393,12 @@ to draw-points
         
         ifelse item 0 ? = "start" or item 0 ? = "end"
         [
-          set size 2
+          set size 0.7
           set color yellow
           set shape "star"
         ]
         [
-          set size 2
+          set size 0.7
           set color red
           set shape "circle"
         ]
@@ -409,7 +409,7 @@ to draw-points
         set xcor item 1 ?1
         set ycor item 2 ?1
         set shape "square"
-        set size 1.5
+        set size 0.7
         set label item 0 ?1
         set label-color black
         set color green
