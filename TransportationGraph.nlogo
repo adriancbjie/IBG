@@ -1,4 +1,4 @@
-globals [avg-wait-count avg-dist-travelled-per-car point-locations destination-point-locations paths p-labels t-labels counter total-wait-count route1 route2 route3 route4 route5]
+globals [routes avg-wait-count avg-dist-travelled-per-car point-locations destination-point-locations paths p-labels t-labels counter total-wait-count route1 route2 route3 route4 route5]
 
 breed [vehicles vehicle]
 breed [points point]
@@ -393,12 +393,12 @@ to draw-points
         
         ifelse item 0 ? = "start" or item 0 ? = "end"
         [
-          set size 0.7
+          set size 2
           set color yellow
           set shape "star"
         ]
         [
-          set size 0.6
+          set size 2
           set color red
           set shape "circle"
         ]
@@ -409,7 +409,7 @@ to draw-points
         set xcor item 1 ?1
         set ycor item 2 ?1
         set shape "square"
-        set size 0.5
+        set size 1.5
         set label item 0 ?1
         set label-color black
         set color green
@@ -554,17 +554,58 @@ to draw-roads
   ;;set path array for easier manipulation of calculating distances
   set paths
   [
-    ["2" "3"]
+    ;;route1
     ["2" "t1" "t2" "t3" "t16" "end"]
-    ["3" "t19" "6"]
-    ["3" "t4" "4"]
-    ["6" "t7" "t8" "t9" "t6" "t10" "t11" "t16" "end"]
-    ["6" "t17" "t10" "t11" "t16" "end"]
-    ["4" "t18" "t5" "t9" "t6" "t10" "t11" "t16" "end"]
+    ;;route2
+    ["2" "3" "t4" "4" "t12" "t13" "t14" "t15" "t3" "t16" "end"]
+    ;;route2
+    ["3" "t4" "4" "t12" "t13" "t14" "t15" "t3" "t16" "end"]
+    ;;route2
     ["4" "t12" "t13" "t14" "t15" "t3" "t16" "end"]
+    ;;route3
+    ["4" "t18" "t5" "t9" "t6" "t10" "t11" "t16" "end"]
+    ;;route4
+    ["6" "t17" "t10" "t11" "t16" "end"]
+    ;;route5
+    ["6" "t7" "t8" "t9" "t6" "t10" "t11" "t16" "end"]
+    ;;route5
+    ["3" "t19" "6" "t7" "t8" "t9" "t6" "t10" "t11" "t16" "end"]
   ]
   
-  ;;pre calculate path distances for each in-between connectors (put the distance as the first item)
+;  ;;set distances of all routes so that we calculate total remaining distance from point to end of route. 
+;  ;;If multiple routes at junction, then select the shortest one of all
+;  ;;first item is route number
+;  set routes
+;  [
+;    ["start" "2" "t1" "t2" "t3" "t16" "end"]
+;    ["start" "2" "3" "t4" "4" "t12" "t13" "t14" "t15" "t3" "t16" "end"]
+;    ["start" "2" "3" "t4" "4" "t18" "t5" "t9" "t6" "t10" "t11" "t16" "end"]
+;    ["start" "2" "3" "t19" "6" "t17" "t10" "t11" "t16" "end"]
+;    ["start" "2" "3" "t19" "6" "t7" "t8" "t9" "t6" "t10" "t11" "t16" "end"]
+;  ]
+;  
+;  ;;count total distance for each route
+;  let r-index 0
+;  foreach routes
+;  [
+;    let in-between-points ?
+;    let index 0
+;    let dist 0
+;    while [index < (length in-between-points - 1)]
+;    [
+;      ;;calc total distance
+;      ask one-of points with [label = item index in-between-points]
+;      [
+;        set dist (dist + distance one-of points with [label = item (index + 1) in-between-points])
+;      ]
+;      set index (index + 1)
+;    ]
+;    set ? fput dist ?
+;    set routes replace-item r-index routes ?
+;    set r-index (r-index + 1)    
+;  ]
+  
+  ;;pre calculate path distances for each point to the end of the shortest route they are projected to (put the distance as the first item)
   let p-index 0
   foreach paths
   [
@@ -792,7 +833,7 @@ mid-urgent
 mid-urgent
 0
 1
-0.9
+0.03
 0.01
 1
 NIL
@@ -895,7 +936,7 @@ vehicle-flow-rate
 vehicle-flow-rate
 0
 20
-20
+1
 1
 1
 NIL
@@ -1283,7 +1324,7 @@ Polygon -7500403 true true 270 75 225 30 30 225 75 270
 Polygon -7500403 true true 30 75 75 30 270 225 225 270
 
 @#$#@#$#@
-NetLogo 5.0RC5
+NetLogo 5.0RC6
 @#$#@#$#@
 @#$#@#$#@
 @#$#@#$#@
