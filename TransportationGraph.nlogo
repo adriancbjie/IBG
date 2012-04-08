@@ -572,6 +572,7 @@ to draw-roads
     ["3" "t19" "6" "t7" "t8" "t9" "t6" "t10" "t11" "t16" "end"]
   ]
   
+   ;;this is removed because I simplified the logic
 ;  ;;set distances of all routes so that we calculate total remaining distance from point to end of route. 
 ;  ;;If multiple routes at junction, then select the shortest one of all
 ;  ;;first item is route number
